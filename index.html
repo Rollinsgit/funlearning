@@ -1,0 +1,677 @@
+<div id="confirmModal" class="modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+            <div style="background: white; padding: 25px; border-radius: 20px; max-width: 350px; text-align: center; border: 5px solid #FFD700; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                <h3 id="confirmTitle" style="font-size: 1.3rem; color: #FF1493; margin-bottom: 15px;">Remove this item?</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 20px; color: #333;" id="confirmMsg">Are you sure?</p>
+                <button onclick="closeConfirm()" style="background: #95a5a6; color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Cancel</button>
+                <button id="confirmBtn" onclick="confirmDelete()" style="background: linear-gradient(135deg, #FF6B6B, #FF1493); color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Yes, Remove</button>
+            </div>
+        </div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juliette's Learning Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            background: linear-gradient(135deg, #FFB6D9, #FFD700, #87CEEB, #98FF98);
+            padding: 15px; 
+            color: #333; 
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, #FF1493, #FF69B4);
+            padding: 25px; 
+            border-radius: 25px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 5px solid #FFD700;
+        }
+        .header h1 { 
+            color: white; 
+            font-size: 2.5rem; 
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+        .header p { 
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        .tabs { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap;
+        }
+        .tab-btn { 
+            background: linear-gradient(135deg, #00D4FF, #0099FF);
+            padding: 15px 20px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            color: white; 
+            border: 4px solid white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .tab-btn:hover { 
+            transform: scale(1.1);
+        }
+        .tab-btn.active { 
+            background: linear-gradient(135deg, #FF1493, #FF69B4);
+            border-color: #FFD700;
+        }
+        .content { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
+            display: none;
+            border: 5px solid #FFD700;
+        }
+        .content.active { display: block; }
+        .content h2 { 
+            font-size: 1.8rem; 
+            margin-bottom: 20px; 
+            color: #FF1493;
+        }
+        .section { 
+            background: #FFE4E1;
+            padding: 15px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            border: 3px dashed #FF69B4;
+        }
+        .section h3 { 
+            color: #FF1493; 
+            margin-bottom: 15px; 
+            font-size: 1.3rem;
+        }
+        .activity-card {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 3px solid #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .activity-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .activity-card.checked {
+            background: linear-gradient(135deg, #98FF98, #00FF00);
+            border-color: #00AA00;
+            box-shadow: 0 6px 20px rgba(152, 255, 152, 0.4);
+            animation: activityCheck 0.5s ease;
+        }
+        @keyframes activityCheck {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        input[type="checkbox"] {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            min-width: 40px;
+            accent-color: #00AA00;
+        }
+        .activity-label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .btn { 
+            background: linear-gradient(135deg, #00D4FF, #0099FF);
+            color: white; 
+            padding: 12px 20px; 
+            border: 3px solid white;
+            border-radius: 15px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin: 10px 10px 10px 0;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn-danger { background: linear-gradient(135deg, #FF6B6B, #FF1493); }
+        input[type="text"] { 
+            padding: 12px; 
+            font-size: 1.1rem; 
+            border-radius: 10px; 
+            border: 3px solid #FFD700; 
+            margin: 10px 0; 
+            width: 100%; 
+            font-family: 'Comic Sans MS', cursive;
+        }
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .book-btn {
+            background: linear-gradient(135deg, #FF69B4, #FFB6D9);
+            padding: 10px;
+            border-radius: 12px 12px 20px 20px;
+            border: 4px solid #FF1493;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            width: 140px;
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.3), inset 0 2px 5px rgba(255,255,255,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .book-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent);
+            pointer-events: none;
+        }
+        .book-emoji {
+            font-size: 2.5rem;
+            margin: 8px 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-image {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 5px 0;
+            border: 3px solid rgba(255,255,255,0.7);
+        }
+        .book-btn:hover { 
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4), inset 0 2px 5px rgba(255,255,255,0.4);
+        }
+        .book-btn:active { transform: scale(0.95) rotate(0deg); }
+        .book-btn.selected {
+            background: linear-gradient(135deg, #FFD700, #FFF000);
+            border-color: #FF1493;
+            color: #FF1493;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5), inset 0 2px 5px rgba(255,255,255,0.6);
+        }
+        .book-title { 
+            font-size: 0.5rem; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-weight: bold;
+            line-height: 1;
+            margin-top: auto;
+            padding-top: 3px;
+            max-height: 20px;
+            overflow: hidden;
+            word-break: break-word;
+        }
+        input[type="file"] {
+            padding: 8px;
+            border: 3px solid #FFD700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 2px solid #FF1493;
+        }
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .badge-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 20px;
+            border-radius: 15px;
+            border: 4px solid #FF1493;
+            font-size: 2.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .badge-btn:hover { transform: scale(1.1) rotate(5deg); }
+        .badge-btn.earned {
+            background: linear-gradient(135deg, #98FF98, #00FF00);
+            border-color: #00AA00;
+        }
+        .badge-label { font-size: 0.75rem; margin-top: 5px; font-weight: bold; }
+        .earned-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+        }
+        .earned-badge {
+            background: linear-gradient(135deg, #98FF98, #00FF00);
+            padding: 12px;
+            border-radius: 12px;
+            border: 3px solid #00AA00;
+            font-size: 1.8rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Juliette's Learning Adventure! 🎉</h1>
+            <p>Learn, Play, and Earn Rewards!</p>
+            <div style="font-size: 2rem; margin-top: 10px;">⭐⭐⭐⭐⭐</div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('activities')">📚 Learning Activities</button>
+            <button class="tab-btn" onclick="showTab('books')">📖 Pick a Book</button>
+            <button class="tab-btn" onclick="showTab('rewards')">🏆 Rewards</button>
+            <button class="tab-btn" onclick="showTab('manage')">⚙️ Add New</button>
+        </div>
+        
+        <!-- ACTIVITIES -->
+        <div id="activities" class="content active">
+            <h2>📚 My Learning Activities</h2>
+            <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
+            <div class="section">
+                <h3>Today's Learning</h3>
+                <div class="activity-card" id="a1" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c1">
+                    <label class="activity-label" for="c1">📱 Reading.com</label>
+                </div>
+                <div class="activity-card" id="a2" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c2">
+                    <label class="activity-label" for="c2">🌊 SplashLearn</label>
+                </div>
+                <div class="activity-card" id="a3" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c3">
+                    <label class="activity-label" for="c3">🌍 Lingokids</label>
+                </div>
+                <div class="activity-card" id="a4" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c4">
+                    <label class="activity-label" for="c4">🎓 Khan Academy Kids</label>
+                </div>
+                <div class="activity-card" id="a5" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c5">
+                    <label class="activity-label" for="c5">📚 Bob Books</label>
+                </div>
+                <div class="activity-card" id="a6" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c6">
+                    <label class="activity-label" for="c6">📖 Readers & Books</label>
+                </div>
+                <div class="activity-card" id="a7" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c7">
+                    <label class="activity-label" for="c7">✏️ Grooved Books</label>
+                </div>
+                <div class="activity-card" id="a8" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c8">
+                    <label class="activity-label" for="c8">🎨 Arts & Crafts</label>
+                </div>
+                <div class="activity-card" id="a9" onclick="toggleActivity(this)">
+                    <input type="checkbox" id="c9">
+                    <label class="activity-label" for="c9">🔬 Science Projects</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BOOKS -->
+        <div id="books" class="content">
+            <h2>📖 Pick a Book to Read!</h2>
+            <div class="section">
+                <h3>Click a book to choose it!</h3>
+                <div class="book-grid" id="bookGrid"></div>
+            </div>
+            <div class="section">
+                <h3>Current Choice:</h3>
+                <div id="currentBook" style="font-size: 1.2rem; color: #FF1493; font-weight: bold; padding: 15px; background: #FFF0F5; border-radius: 10px; border: 3px solid #FFD700;">Pick a book!</div>
+            </div>
+        </div>
+        
+        <!-- REWARDS -->
+        <div id="rewards" class="content">
+            <h2>🏆 My Rewards & Badges</h2>
+            <p style="color: #FF1493; font-weight: bold; margin-bottom: 15px;">Click badges to award them!</p>
+            <div class="section">
+                <h3>Available Badges</h3>
+                <div class="badge-grid" id="badgeGrid"></div>
+            </div>
+            <div class="section">
+                <h3>Badges Earned 🎉</h3>
+                <div class="earned-display" id="earnedDisplay"></div>
+            </div>
+        </div>
+        
+        <!-- MANAGE -->
+        <div id="manage" class="content">
+            <h2>➕ Add New Items</h2>
+            <div class="section">
+                <h3>Add a Book</h3>
+                <input type="text" id="bookTitle" placeholder="Book Name (e.g., Bob Books)">
+                <input type="text" id="bookDesc" placeholder="Book Description (e.g., Fun adventure!)">
+                <label for="bookPhoto" style="display: block; font-weight: bold; color: #FF1493; margin: 10px 0;">Upload Book Photo (optional):</label>
+                <input type="file" id="bookPhoto" accept="image/*">
+                <img id="photoPreview" class="preview-img" style="display: none;">
+                <button class="btn" onclick="addBook()">Add Book</button>
+                <div id="bookList" style="margin-top: 15px;"></div>
+            </div>
+            <div class="section">
+                <h3>Add a Badge</h3>
+                <input type="text" id="badgeEmoji" placeholder="Emoji (e.g., 🌟)" maxlength="5">
+                <input type="text" id="badgeTitle" placeholder="Badge Name (e.g., Star Learner)">
+                <button class="btn" onclick="addBadge()">Add Badge</button>
+                <div id="badgeList" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let books = [["📚", "Bob Books", null, "Fun books to help with reading!"], ["🐛", "Very Hungry Caterpillar", null, "A caterpillar's amazing journey!"], ["👑", "Where Wild Things Are", null, "An adventure in a magical forest!"], ["🧸", "Corduroy", null, "A teddy bear looking for love!"]];
+        let badges = [["🌟", "Star Learner"], ["🎯", "Super Reader"], ["🏆", "Spelling Champ"], ["🎨", "Art Master"], ["🔬", "Science Explorer"], ["💪", "Try Hard Hero"], ["🎉", "Awesome Achiever"], ["👑", "Learning Queen"]];
+        let earnedBadges = [];
+        let selectedBook = null;
+
+        function showTab(tab) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'manage') displayManage();
+            if (tab === 'books') displayBooks();
+            if (tab === 'rewards') displayRewards();
+        }
+
+        function displayBooks() {
+            let html = '';
+            books.forEach((b, i) => {
+                html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
+                if (b[2]) {
+                    html += '<img src="' + b[2] + '" class="book-image" alt="' + b[1] + '">';
+                } else {
+                    html += '<div class="book-emoji">' + b[0] + '</div>';
+                }
+                html += '<div class="book-title">' + b[1] + '</div></div>';
+            });
+            document.getElementById('bookGrid').innerHTML = html;
+            updateBookDisplay();
+        }
+
+        function selectBook(idx) {
+            selectedBook = selectedBook === idx ? null : idx;
+            displayBooks();
+            save();
+        }
+
+        function updateBookDisplay() {
+            if (selectedBook !== null) {
+                let display = '<div style="font-size: 1.5rem; margin-bottom: 10px;">' + books[selectedBook][0] + '</div>';
+                display += '<div style="font-size: 1.3rem; color: #FF1493; font-weight: bold; margin-bottom: 10px;">' + books[selectedBook][1] + '</div>';
+                if (books[selectedBook][3]) {
+                    display += '<div style="font-size: 1.1rem; color: #666; font-style: italic;">' + books[selectedBook][3] + '</div>';
+                }
+                document.getElementById('currentBook').innerHTML = display;
+            } else {
+                document.getElementById('currentBook').innerHTML = 'Pick a book!';
+            }
+        }
+
+        function displayRewards() {
+            let html = '';
+            badges.forEach((b, i) => {
+                html += '<div class="badge-btn ' + (earnedBadges.includes(i) ? 'earned' : '') + '" onclick="toggleBadge(' + i + ')"><div>' + b[0] + '</div><div class="badge-label">' + b[1] + '</div></div>';
+            });
+            document.getElementById('badgeGrid').innerHTML = html;
+            
+            let earned = '';
+            if (earnedBadges.length === 0) {
+                earned = '<div style="text-align: center; color: #999; padding: 20px;">Click badges above to earn them!</div>';
+            } else {
+                earnedBadges.forEach(i => {
+                    earned += '<div class="earned-badge">' + badges[i][0] + '</div>';
+                });
+            }
+            document.getElementById('earnedDisplay').innerHTML = earned;
+        }
+
+        function toggleBadge(idx) {
+            if (earnedBadges.includes(idx)) {
+                earnedBadges = earnedBadges.filter(i => i !== idx);
+            } else {
+                earnedBadges.push(idx);
+            }
+            displayRewards();
+            save();
+        }
+
+        function addBook() {
+            const title = document.getElementById('bookTitle').value.trim();
+            const desc = document.getElementById('bookDesc').value.trim();
+            const photoFile = document.getElementById('bookPhoto').files[0];
+            
+            if (!title) return alert('Fill in book name!');
+            
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    books.push(["📚", title, e.target.result, desc || 'A great book!']);
+                    clearBookForm();
+                    displayBooks();
+                    displayManage();
+                    save();
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                books.push(["📚", title, null, desc || 'A great book!']);
+                clearBookForm();
+                displayBooks();
+                displayManage();
+                save();
+            }
+        }
+
+        function clearBookForm() {
+            document.getElementById('bookTitle').value = '';
+            document.getElementById('bookDesc').value = '';
+            document.getElementById('bookPhoto').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoInput = document.getElementById('bookPhoto');
+            if (photoInput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('photoPreview');
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
+        function deleteBook(idx) {
+            if (books.length <= 1) return alert('Keep one book!');
+            books.splice(idx, 1);
+            if (selectedBook === idx) selectedBook = null;
+            displayBooks();
+            displayManage();
+            save();
+        }
+
+        function addBadge() {
+            const emoji = document.getElementById('badgeEmoji').value.trim();
+            const title = document.getElementById('badgeTitle').value.trim();
+            if (!emoji || !title) return alert('Fill in emoji and name!');
+            badges.push([emoji, title]);
+            document.getElementById('badgeEmoji').value = '';
+            document.getElementById('badgeTitle').value = '';
+            displayRewards();
+            displayManage();
+            save();
+        }
+
+        function deleteBadge(idx) {
+            if (badges.length <= 1) return alert('Keep one badge!');
+            badges.splice(idx, 1);
+            earnedBadges = earnedBadges.filter(i => i !== idx);
+            displayRewards();
+            displayManage();
+            save();
+        }
+
+        function displayManage() {
+            let html = '<div style="margin-top: 15px;">';
+            books.forEach((b, i) => {
+                let bookInfo = b[1] + (b[3] ? ' - ' + b[3] : '');
+                html += '<div style="background: #E1F5FF; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><div><span>' + bookInfo + '</span>' + (b[2] ? '<br><small style="color: #999;">✓ Has photo</small>' : '') + '</div><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBook(' + i + ')">Remove</button></div>';
+            });
+            html += '</div>';
+            document.getElementById('bookList').innerHTML = html;
+
+            html = '<div style="margin-top: 15px;">';
+            badges.forEach((b, i) => {
+                html += '<div style="background: #FFE4E1; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><span>' + b[0] + ' ' + b[1] + '</span><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBadge(' + i + ')">Remove</button></div>';
+            });
+            html += '</div>';
+            document.getElementById('badgeList').innerHTML = html;
+        }
+
+        let deleteTarget = null;
+
+        function deleteBook(idx) {
+            if (books.length <= 1) return alert('Keep at least one book!');
+            deleteTarget = { type: 'book', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Book?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + books[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function deleteBadge(idx) {
+            if (badges.length <= 1) return alert('Keep at least one badge!');
+            deleteTarget = { type: 'badge', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Badge?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + badges[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function confirmDelete() {
+            if (!deleteTarget) return;
+            
+            if (deleteTarget.type === 'book') {
+                books.splice(deleteTarget.idx, 1);
+                if (selectedBook === deleteTarget.idx) selectedBook = null;
+                else if (selectedBook > deleteTarget.idx) selectedBook--;
+                displayBooks();
+            } else if (deleteTarget.type === 'badge') {
+                badges.splice(deleteTarget.idx, 1);
+                earnedBadges = earnedBadges.filter(i => i !== deleteTarget.idx).map(i => i > deleteTarget.idx ? i - 1 : i);
+                displayRewards();
+            }
+            
+            displayManage();
+            save();
+            closeConfirm();
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmModal').style.display = 'none';
+            deleteTarget = null;
+        }
+
+        function resetDay() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.querySelectorAll('.activity-card').forEach(card => card.classList.remove('checked'));
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('julietteBooks', JSON.stringify(books));
+            localStorage.setItem('julietteBadges', JSON.stringify(badges));
+            localStorage.setItem('julietteEarned', JSON.stringify(earnedBadges));
+            localStorage.setItem('julietteBook', JSON.stringify(selectedBook));
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                localStorage.setItem(c.id, c.checked);
+            });
+        }
+
+        function load() {
+            const b = localStorage.getItem('julietteBooks');
+            if (b) books = JSON.parse(b);
+            const ba = localStorage.getItem('julietteBadges');
+            if (ba) badges = JSON.parse(ba);
+            const eb = localStorage.getItem('julietteEarned');
+            if (eb) earnedBadges = JSON.parse(eb);
+            const sb = localStorage.getItem('julietteBook');
+            if (sb !== null) selectedBook = JSON.parse(sb);
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                c.checked = localStorage.getItem(c.id) === 'true';
+                c.addEventListener('change', save);
+            });
+        }
+
+        function toggleActivity(card) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                card.classList.add('checked');
+            } else {
+                card.classList.remove('checked');
+            }
+            save();
+        }
+
+        function initializeActivities() {
+            for (let i = 1; i <= 9; i++) {
+                const checkbox = document.getElementById('c' + i);
+                const card = document.getElementById('a' + i);
+                
+                if (checkbox && card) {
+                    if (checkbox.checked) {
+                        card.classList.add('checked');
+                    }
+                    
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            card.classList.add('checked');
+                        } else {
+                            card.classList.remove('checked');
+                        }
+                        save();
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
