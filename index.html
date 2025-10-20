@@ -98,6 +98,11 @@
             gap: 15px;
             cursor: pointer;
             transition: all 0.3s;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .activity-card * {
+            pointer-events: auto;
         }
         .activity-card:hover {
             transform: scale(1.02);
@@ -408,6 +413,11 @@
 
     <script>
         // Firebase Configuration - wrapped in try/catch
+        let db = null;
+        let auth = null;
+        let userId = null;
+        let firebaseReady = false;
+
         try {
             const firebaseConfig = {
                 apiKey: "AIzaSyCBwWZy1Jqr3VjnctowOrmyB7LhulQgFjQ",
@@ -423,27 +433,51 @@
             if (firebase.apps.length === 0) {
                 firebase.initializeApp(firebaseConfig);
             }
-            const db = firebase.database();
-            const auth = firebase.auth();
-            
-            let userId = null;
-            let firebaseReady = false;
+            db = firebase.database();
+            auth = firebase.auth();
 
-            // Initialize Firebase Auth
+            // Initialize Firebase Auth and start listening
             auth.signInAnonymously().then((userCredential) => {
                 userId = userCredential.user.uid;
                 firebaseReady = true;
-                console.log('Firebase ready!');
+                console.log('Firebase ready! User ID:', userId);
+                // Start listening for updates from other devices
+                syncWithFirebase();
             }).catch((error) => {
-                console.log('Firebase not available');
+                console.log('Firebase auth error:', error.message);
                 firebaseReady = false;
             });
         } catch(e) {
             console.log('Firebase initialization error:', e);
-            var db = null;
-            var auth = null;
-            var userId = null;
-            var firebaseReady = false;
+            firebaseReady = false;
+        }
+
+        function syncWithFirebase() {
+            if (!firebaseReady || !userId || !db) return;
+            
+            db.ref('users/' + userId + '/data').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    books = data.books || books;
+                    badges = data.badges || badges;
+                    earnedBadges = data.earnedBadges || [];
+                    selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
+                    
+                    if (data.checkboxStates) {
+                        Object.keys(data.checkboxStates).forEach(checkboxId => {
+                            const checkbox = document.getElementById(checkboxId);
+                            if (checkbox) {
+                                checkbox.checked = data.checkboxStates[checkboxId];
+                                updateCardState(checkbox);
+                            }
+                        });
+                    }
+                    
+                    displayBooks();
+                    displayRewards();
+                    console.log('Synced with Firebase!');
+                }
+            });
         }
 
         let books = [["📚", "Bob Books", null, "Fun books to help with reading!"], ["🐛", "Very Hungry Caterpillar", null, "A caterpillar's amazing journey!"], ["👑", "Where Wild Things Are", null, "An adventure in a magical forest!"], ["🧸", "Corduroy", null, "A teddy bear looking for love!"]];
@@ -731,6 +765,7 @@
         }
 
         function toggleActivity(card, event) {
+            if (event) event.stopPropagation();
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
             updateCardState(checkbox);
