@@ -389,11 +389,32 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBwWZy1Jqr3VjnctowOrmyB7LhulQgFjQ",
+            authDomain: "funtime-learning.firebaseapp.com",
+            databaseURL: "https://funtime-learning-default-rtdb.firebaseio.com",
+            projectId: "funtime-learning",
+            storageBucket: "funtime-learning.firebasestorage.app",
+            messagingSenderId: "438570833399",
+            appId: "1:438570833399:web:866c58a88c751491ab0af2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
         let books = [["📚", "Bob Books", null, "Fun books to help with reading!"], ["🐛", "Very Hungry Caterpillar", null, "A caterpillar's amazing journey!"], ["👑", "Where Wild Things Are", null, "An adventure in a magical forest!"], ["🧸", "Corduroy", null, "A teddy bear looking for love!"]];
         let badges = [["🌟", "Star Learner"], ["🎯", "Super Reader"], ["🏆", "Spelling Champ"], ["🎨", "Art Master"], ["🔬", "Science Explorer"], ["💪", "Try Hard Hero"], ["🎉", "Awesome Achiever"], ["👑", "Learning Queen"]];
         let earnedBadges = [];
         let selectedBook = null;
+        let userId = null;
+        let isSyncing = false;
 
         function showTab(tab) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -501,6 +522,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Load data from Firebase or localStorage
+            load();
+
             const photoInput = document.getElementById('bookPhoto');
             if (photoInput) {
                 photoInput.addEventListener('change', function(e) {
@@ -622,16 +646,73 @@
         }
 
         function save() {
-            localStorage.setItem('julietteBooks', JSON.stringify(books));
-            localStorage.setItem('julietteBadges', JSON.stringify(badges));
-            localStorage.setItem('julietteEarned', JSON.stringify(earnedBadges));
-            localStorage.setItem('julietteBook', JSON.stringify(selectedBook));
+            if (!userId) return; // Don't save if not authenticated
+            
+            isSyncing = true;
+            
+            const checkboxStates = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                localStorage.setItem(c.id, c.checked);
+                checkboxStates[c.id] = c.checked;
+            });
+
+            const data = {
+                books: books,
+                badges: badges,
+                earnedBadges: earnedBadges,
+                selectedBook: selectedBook,
+                checkboxStates: checkboxStates,
+                lastUpdated: new Date().toISOString()
+            };
+
+            db.ref('users/' + userId + '/data').set(data).then(() => {
+                console.log('Data synced to Firebase!');
+                isSyncing = false;
+            }).catch((error) => {
+                console.error('Error syncing to Firebase:', error);
+                // Fallback to localStorage
+                localStorage.setItem('julietteBooks', JSON.stringify(books));
+                localStorage.setItem('julietteBadges', JSON.stringify(badges));
+                localStorage.setItem('julietteEarned', JSON.stringify(earnedBadges));
+                localStorage.setItem('julietteBook', JSON.stringify(selectedBook));
+                isSyncing = false;
             });
         }
 
         function load() {
+            // First authenticate anonymously
+            auth.signInAnonymously().then((userCredential) => {
+                userId = userCredential.user.uid;
+                
+                // Listen for real-time updates from Firebase
+                db.ref('users/' + userId + '/data').on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        books = data.books || books;
+                        badges = data.badges || badges;
+                        earnedBadges = data.earnedBadges || [];
+                        selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
+                        
+                        // Restore checkbox states
+                        if (data.checkboxStates) {
+                            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                                c.checked = data.checkboxStates[c.id] === true;
+                                updateCardState(c);
+                            });
+                        }
+                        
+                        console.log('Data loaded from Firebase!');
+                    } else {
+                        // No data yet, try localStorage as fallback
+                        loadFromLocalStorage();
+                    }
+                });
+            }).catch((error) => {
+                console.error('Authentication failed:', error);
+                loadFromLocalStorage();
+            });
+        }
+
+        function loadFromLocalStorage() {
             const b = localStorage.getItem('julietteBooks');
             if (b) books = JSON.parse(b);
             const ba = localStorage.getItem('julietteBadges');
@@ -643,7 +724,6 @@
             
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 c.checked = localStorage.getItem(c.id) === 'true';
-                c.addEventListener('change', save);
             });
         }
 
