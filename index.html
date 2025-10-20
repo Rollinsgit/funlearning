@@ -696,19 +696,22 @@
                         if (data.checkboxStates) {
                             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                                 c.checked = data.checkboxStates[c.id] === true;
-                                updateCardState(c);
                             });
                         }
                         
+                        // Update all card visual states
+                        updateAllCardStates();
                         console.log('Data loaded from Firebase!');
                     } else {
                         // No data yet, try localStorage as fallback
                         loadFromLocalStorage();
+                        updateAllCardStates();
                     }
                 });
             }).catch((error) => {
                 console.error('Authentication failed:', error);
                 loadFromLocalStorage();
+                updateAllCardStates();
             });
         }
 
@@ -746,6 +749,12 @@
             } else {
                 card.classList.remove('checked');
             }
+        }
+
+        function updateAllCardStates() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                updateCardState(c);
+            });
         }
 
         function initializeActivities() {
