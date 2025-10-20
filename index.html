@@ -300,39 +300,39 @@
             <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
             <div class="section">
                 <h3>Today's Learning</h3>
-                <div class="activity-card" id="a1" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a1" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c1">
                     <label class="activity-label" for="c1">📱 Reading.com</label>
                 </div>
-                <div class="activity-card" id="a2" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a2" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c2">
                     <label class="activity-label" for="c2">🌊 SplashLearn</label>
                 </div>
-                <div class="activity-card" id="a3" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a3" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c3">
                     <label class="activity-label" for="c3">🌍 Lingokids</label>
                 </div>
-                <div class="activity-card" id="a4" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a4" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c4">
                     <label class="activity-label" for="c4">🎓 Khan Academy Kids</label>
                 </div>
-                <div class="activity-card" id="a5" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a5" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c5">
                     <label class="activity-label" for="c5">📚 Bob Books</label>
                 </div>
-                <div class="activity-card" id="a6" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a6" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c6">
                     <label class="activity-label" for="c6">📖 Readers & Books</label>
                 </div>
-                <div class="activity-card" id="a7" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a7" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c7">
                     <label class="activity-label" for="c7">✏️ Grooved Books</label>
                 </div>
-                <div class="activity-card" id="a8" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a8" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c8">
                     <label class="activity-label" for="c8">🎨 Arts & Crafts</label>
                 </div>
-                <div class="activity-card" id="a9" onclick="toggleActivity(this)">
+                <div class="activity-card" id="a9" onclick="toggleActivity(this, event)">
                     <input type="checkbox" id="c9">
                     <label class="activity-label" for="c9">🔬 Science Projects</label>
                 </div>
@@ -516,6 +516,14 @@
                     }
                 });
             }
+
+            // Add checkbox handlers
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                c.addEventListener('change', function() {
+                    updateCardState(this);
+                    save();
+                });
+            });
         });
 
         function deleteBook(idx) {
@@ -639,16 +647,25 @@
             });
         }
 
-        function toggleActivity(card) {
+        function toggleActivity(card, event) {
+            // If clicking the checkbox or label directly, let native behavior handle it
+            if (event && (event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL')) {
+                return;
+            }
+            
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
-            
+            updateCardState(checkbox);
+            save();
+        }
+
+        function updateCardState(checkbox) {
+            const card = checkbox.closest('.activity-card');
             if (checkbox.checked) {
                 card.classList.add('checked');
             } else {
                 card.classList.remove('checked');
             }
-            save();
         }
 
         function initializeActivities() {
