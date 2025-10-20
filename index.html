@@ -313,40 +313,40 @@
             <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
             <div class="section">
                 <h3>Today's Learning</h3>
-                <div class="activity-card" id="a1" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c1">
+                <div class="activity-card" id="a1">
+                    <input type="checkbox" id="c1" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c1">📱 Reading.com</label>
                 </div>
-                <div class="activity-card" id="a2" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c2">
+                <div class="activity-card" id="a2">
+                    <input type="checkbox" id="c2" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c2">🌊 SplashLearn</label>
                 </div>
-                <div class="activity-card" id="a3" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c3">
+                <div class="activity-card" id="a3">
+                    <input type="checkbox" id="c3" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c3">🌍 Lingokids</label>
                 </div>
-                <div class="activity-card" id="a4" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c4">
+                <div class="activity-card" id="a4">
+                    <input type="checkbox" id="c4" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c4">🎓 Khan Academy Kids</label>
                 </div>
-                <div class="activity-card" id="a5" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c5">
+                <div class="activity-card" id="a5">
+                    <input type="checkbox" id="c5" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c5">📚 Bob Books</label>
                 </div>
-                <div class="activity-card" id="a6" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c6">
+                <div class="activity-card" id="a6">
+                    <input type="checkbox" id="c6" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c6">📖 Readers & Books</label>
                 </div>
-                <div class="activity-card" id="a7" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c7">
+                <div class="activity-card" id="a7">
+                    <input type="checkbox" id="c7" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c7">✏️ Grooved Books</label>
                 </div>
-                <div class="activity-card" id="a8" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c8">
+                <div class="activity-card" id="a8">
+                    <input type="checkbox" id="c8" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c8">🎨 Arts & Crafts</label>
                 </div>
-                <div class="activity-card" id="a9" onclick="toggleActivity(this, event)">
-                    <input type="checkbox" id="c9">
+                <div class="activity-card" id="a9">
+                    <input type="checkbox" id="c9" onchange="handleCheckboxChange(event)">
                     <label class="activity-label" for="c9">🔬 Science Projects</label>
                 </div>
             </div>
@@ -598,6 +598,9 @@
             displayRewards();
             displayManage();
 
+            // Attach checkbox listeners
+            attachCheckboxListeners();
+
             const photoInput = document.getElementById('bookPhoto');
             if (photoInput) {
                 photoInput.addEventListener('change', function(e) {
@@ -614,6 +617,19 @@
                 });
             }
         });
+
+        function attachCheckboxListeners() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                c.removeEventListener('change', handleCheckboxChange);
+                c.addEventListener('change', handleCheckboxChange);
+            });
+        }
+
+        function handleCheckboxChange(e) {
+            const checkbox = e.target;
+            updateCardState(checkbox);
+            save();
+        }
 
         function addBadge() {
             const emoji = document.getElementById('badgeEmoji').value.trim();
