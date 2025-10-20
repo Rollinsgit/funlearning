@@ -397,7 +397,11 @@
             let html = '';
             books.forEach((b, i) => {
                 html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
-                html += '<div class="book-emoji">' + b[0] + '</div>';
+                if (b[2]) {
+                    html += '<img src="' + b[2] + '" style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin: 5px 0; border: 3px solid rgba(255,255,255,0.7);">';
+                } else {
+                    html += '<div class="book-emoji">' + b[0] + '</div>';
+                }
                 html += '<div class="book-title">' + b[1] + '</div></div>';
             });
             document.getElementById('bookGrid').innerHTML = html;
