@@ -731,10 +731,6 @@
         }
 
         function toggleActivity(card, event) {
-            if (event && (event.target.tagName === 'INPUT' || event.target.tagName === 'LABEL')) {
-                return;
-            }
-            
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
             updateCardState(checkbox);
