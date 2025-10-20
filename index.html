@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juliette's Learning Dashboard</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Comic Sans MS', 'Trebuchet MS', 'Arial', sans-serif;
+            font-family: 'Comic Sans MS', 'Trebuchet MS', 'Arial', sans-serif; 
             background: linear-gradient(135deg, #FFB6D9, #FFD700, #87CEEB, #98FF98);
             padding: 15px; 
             color: #333; 
@@ -98,11 +95,25 @@
             gap: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            -webkit-user-select: none;
-            user-select: none;
+            min-height: 50px;
+            touch-action: manipulation;
         }
-        .activity-card * {
+        
+        .activity-card input[type="checkbox"] {
+            flex-shrink: 0;
             pointer-events: auto;
+        }
+        
+        .activity-label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0;
+            margin: 0;
+            display: block;
+            width: 100%;
+            pointer-events: none;
         }
         .activity-card:hover {
             transform: scale(1.02);
@@ -125,12 +136,6 @@
             cursor: pointer;
             min-width: 40px;
             accent-color: #00AA00;
-        }
-        .activity-label {
-            flex: 1;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 500;
         }
         .btn { 
             background: linear-gradient(135deg, #00D4FF, #0099FF);
@@ -278,18 +283,6 @@
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        #confirmModal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 </head>
 <body>
@@ -313,40 +306,40 @@
             <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
             <div class="section">
                 <h3>Today's Learning</h3>
-                <div class="activity-card" id="a1">
-                    <input type="checkbox" id="c1" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a1" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c1" onclick="event.stopPropagation()" onchange="updateActivityCard(1)">
                     <label class="activity-label" for="c1">📱 Reading.com</label>
                 </div>
-                <div class="activity-card" id="a2">
-                    <input type="checkbox" id="c2" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a2" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c2" onclick="event.stopPropagation()" onchange="updateActivityCard(2)">
                     <label class="activity-label" for="c2">🌊 SplashLearn</label>
                 </div>
-                <div class="activity-card" id="a3">
-                    <input type="checkbox" id="c3" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a3" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c3" onclick="event.stopPropagation()" onchange="updateActivityCard(3)">
                     <label class="activity-label" for="c3">🌍 Lingokids</label>
                 </div>
-                <div class="activity-card" id="a4">
-                    <input type="checkbox" id="c4" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a4" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c4" onclick="event.stopPropagation()" onchange="updateActivityCard(4)">
                     <label class="activity-label" for="c4">🎓 Khan Academy Kids</label>
                 </div>
-                <div class="activity-card" id="a5">
-                    <input type="checkbox" id="c5" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a5" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c5" onclick="event.stopPropagation()" onchange="updateActivityCard(5)">
                     <label class="activity-label" for="c5">📚 Bob Books</label>
                 </div>
-                <div class="activity-card" id="a6">
-                    <input type="checkbox" id="c6" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a6" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c6" onclick="event.stopPropagation()" onchange="updateActivityCard(6)">
                     <label class="activity-label" for="c6">📖 Readers & Books</label>
                 </div>
-                <div class="activity-card" id="a7">
-                    <input type="checkbox" id="c7" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a7" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c7" onclick="event.stopPropagation()" onchange="updateActivityCard(7)">
                     <label class="activity-label" for="c7">✏️ Grooved Books</label>
                 </div>
-                <div class="activity-card" id="a8">
-                    <input type="checkbox" id="c8" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a8" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c8" onclick="event.stopPropagation()" onchange="updateActivityCard(8)">
                     <label class="activity-label" for="c8">🎨 Arts & Crafts</label>
                 </div>
-                <div class="activity-card" id="a9">
-                    <input type="checkbox" id="c9" onchange="handleCheckboxChange(event)">
+                <div class="activity-card" id="a9" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c9" onclick="event.stopPropagation()" onchange="updateActivityCard(9)">
                     <label class="activity-label" for="c9">🔬 Science Projects</label>
                 </div>
             </div>
@@ -402,7 +395,7 @@
         </div>
     </div>
 
-    <div id="confirmModal">
+    <div id="confirmModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
         <div style="background: white; padding: 25px; border-radius: 20px; max-width: 350px; text-align: center; border: 5px solid #FFD700; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
             <h3 id="confirmTitle" style="font-size: 1.3rem; color: #FF1493; margin-bottom: 15px;">Remove this item?</h3>
             <p style="font-size: 1.1rem; margin-bottom: 20px; color: #333;" id="confirmMsg">Are you sure?</p>
@@ -412,79 +405,10 @@
     </div>
 
     <script>
-        // Firebase Configuration - wrapped in try/catch
-        let db = null;
-        let auth = null;
-        let userId = null;
-        let firebaseReady = false;
-
-        try {
-            const firebaseConfig = {
-                apiKey: "AIzaSyCBwWZy1Jqr3VjnctowOrmyB7LhulQgFjQ",
-                authDomain: "funtime-learning.firebaseapp.com",
-                databaseURL: "https://funtime-learning-default-rtdb.firebaseio.com",
-                projectId: "funtime-learning",
-                storageBucket: "funtime-learning.firebasestorage.app",
-                messagingSenderId: "438570833399",
-                appId: "1:438570833399:web:866c58a88c751491ab0af2"
-            };
-
-            // Initialize Firebase
-            if (firebase.apps.length === 0) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            db = firebase.database();
-            auth = firebase.auth();
-
-            // Initialize Firebase Auth and start listening
-            auth.signInAnonymously().then((userCredential) => {
-                userId = userCredential.user.uid;
-                firebaseReady = true;
-                console.log('Firebase ready! User ID:', userId);
-                // Start listening for updates from other devices
-                syncWithFirebase();
-            }).catch((error) => {
-                console.log('Firebase auth error:', error.message);
-                firebaseReady = false;
-            });
-        } catch(e) {
-            console.log('Firebase initialization error:', e);
-            firebaseReady = false;
-        }
-
-        function syncWithFirebase() {
-            if (!firebaseReady || !userId || !db) return;
-            
-            db.ref('users/' + userId + '/data').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    books = data.books || books;
-                    badges = data.badges || badges;
-                    earnedBadges = data.earnedBadges || [];
-                    selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
-                    
-                    if (data.checkboxStates) {
-                        Object.keys(data.checkboxStates).forEach(checkboxId => {
-                            const checkbox = document.getElementById(checkboxId);
-                            if (checkbox) {
-                                checkbox.checked = data.checkboxStates[checkboxId];
-                                updateCardState(checkbox);
-                            }
-                        });
-                    }
-                    
-                    displayBooks();
-                    displayRewards();
-                    console.log('Synced with Firebase!');
-                }
-            });
-        }
-
         let books = [["📚", "Bob Books", null, "Fun books to help with reading!"], ["🐛", "Very Hungry Caterpillar", null, "A caterpillar's amazing journey!"], ["👑", "Where Wild Things Are", null, "An adventure in a magical forest!"], ["🧸", "Corduroy", null, "A teddy bear looking for love!"]];
         let badges = [["🌟", "Star Learner"], ["🎯", "Super Reader"], ["🏆", "Spelling Champ"], ["🎨", "Art Master"], ["🔬", "Science Explorer"], ["💪", "Try Hard Hero"], ["🎉", "Awesome Achiever"], ["👑", "Learning Queen"]];
         let earnedBadges = [];
         let selectedBook = null;
-        let deleteTarget = null;
 
         function showTab(tab) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -592,15 +516,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Load and display all data
-            load();
-            displayBooks();
-            displayRewards();
-            displayManage();
-
-            // Attach checkbox listeners
-            attachCheckboxListeners();
-
             const photoInput = document.getElementById('bookPhoto');
             if (photoInput) {
                 photoInput.addEventListener('change', function(e) {
@@ -618,17 +533,12 @@
             }
         });
 
-        function attachCheckboxListeners() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                c.removeEventListener('change', handleCheckboxChange);
-                c.addEventListener('change', handleCheckboxChange);
-            });
-        }
-
-        function handleCheckboxChange(e) {
-            const checkbox = e.target;
-            updateCardState(checkbox);
-            save();
+        function deleteBook(idx) {
+            if (books.length <= 1) return alert('Keep at least one book!');
+            deleteTarget = { type: 'book', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Book?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + books[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function addBadge() {
@@ -641,6 +551,14 @@
             displayRewards();
             displayManage();
             save();
+        }
+
+        function deleteBadge(idx) {
+            if (badges.length <= 1) return alert('Keep at least one badge!');
+            deleteTarget = { type: 'badge', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Badge?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + badges[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function displayManage() {
@@ -659,6 +577,8 @@
             html += '</div>';
             document.getElementById('badgeList').innerHTML = html;
         }
+
+        let deleteTarget = null;
 
         function deleteBook(idx) {
             if (books.length <= 1) return alert('Keep at least one book!');
@@ -714,30 +634,6 @@
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 localStorage.setItem(c.id, c.checked);
             });
-
-            if (firebaseReady && userId && db) {
-                const checkboxStates = {};
-                document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                    checkboxStates[c.id] = c.checked;
-                });
-
-                const data = {
-                    books: books,
-                    badges: badges,
-                    earnedBadges: earnedBadges,
-                    selectedBook: selectedBook,
-                    checkboxStates: checkboxStates,
-                    lastUpdated: new Date().toISOString()
-                };
-
-                db.ref('users/' + userId + '/data').set(data).then(() => {
-                    console.log('Data saved to Firebase');
-                }).catch((error) => {
-                    console.log('Firebase save error:', error.message);
-                });
-            } else {
-                console.log('Firebase not ready - saving to localStorage only');
-            }
         }
 
         function load() {
@@ -752,47 +648,65 @@
             
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 c.checked = localStorage.getItem(c.id) === 'true';
+                c.addEventListener('change', save);
             });
-
-            if (firebaseReady && userId) {
-                db.ref('users/' + userId + '/data').on('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        books = data.books || books;
-                        badges = data.badges || badges;
-                        earnedBadges = data.earnedBadges || [];
-                        selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
-                        
-                        if (data.checkboxStates) {
-                            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                                c.checked = data.checkboxStates[c.id] === true;
-                                updateCardState(c);
-                            });
-                        }
-                        console.log('Data synced from Firebase!');
-                    }
-                }, (error) => {
-                    console.log('Firebase sync read skipped:', error.message);
-                });
-            }
         }
 
-        function toggleActivity(card, event) {
-            if (event) event.stopPropagation();
+        function toggleActivityCard(card, event) {
+            // If user clicked directly on the checkbox, let it handle itself
+            if (event && event.target.tagName === 'INPUT') {
+                return;
+            }
+            
+            // Otherwise, toggle the checkbox
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
-            updateCardState(checkbox);
-            save();
+            const num = parseInt(card.id.substring(1));
+            updateActivityCard(num);
         }
 
-        function updateCardState(checkbox) {
-            const card = checkbox.closest('.activity-card');
+        function updateActivityCard(num) {
+            const checkbox = document.getElementById('c' + num);
+            const card = document.getElementById('a' + num);
+            
             if (checkbox.checked) {
                 card.classList.add('checked');
             } else {
                 card.classList.remove('checked');
             }
+            save();
         }
+
+        function initializeActivities() {
+            for (let i = 1; i <= 9; i++) {
+                const checkbox = document.getElementById('c' + i);
+                const card = document.getElementById('a' + i);
+                
+                if (checkbox && card) {
+                    if (checkbox.checked) {
+                        card.classList.add('checked');
+                    }
+                    
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            card.classList.add('checked');
+                        } else {
+                            card.classList.remove('checked');
+                        }
+                        save();
+                    });
+                }
+            }
+        }
+
+        // Load data and initialize on page load
+        window.addEventListener('load', function() {
+            load();
+            displayBooks();
+            displayRewards();
+            displayManage();
+            initializeActivities();
+        });
     </script>
 </body>
 </html>
