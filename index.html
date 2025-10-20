@@ -51,9 +51,7 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .tab-btn:hover { 
-            transform: scale(1.1);
-        }
+        .tab-btn:hover { transform: scale(1.1); }
         .tab-btn.active { 
             background: linear-gradient(135deg, #FF1493, #FF69B4);
             border-color: #FFD700;
@@ -98,23 +96,6 @@
             min-height: 50px;
             touch-action: manipulation;
         }
-        
-        .activity-card input[type="checkbox"] {
-            flex-shrink: 0;
-            pointer-events: auto;
-        }
-        
-        .activity-label {
-            flex: 1;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 0;
-            margin: 0;
-            display: block;
-            width: 100%;
-            pointer-events: none;
-        }
         .activity-card:hover {
             transform: scale(1.02);
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
@@ -123,19 +104,21 @@
             background: linear-gradient(135deg, #98FF98, #00FF00);
             border-color: #00AA00;
             box-shadow: 0 6px 20px rgba(152, 255, 152, 0.4);
-            animation: activityCheck 0.5s ease;
-        }
-        @keyframes activityCheck {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.05) rotate(5deg); }
-            100% { transform: scale(1) rotate(0deg); }
         }
         input[type="checkbox"] {
             width: 40px;
             height: 40px;
             cursor: pointer;
-            min-width: 40px;
             accent-color: #00AA00;
+            flex-shrink: 0;
+            pointer-events: auto;
+        }
+        .activity-label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            pointer-events: none;
         }
         .btn { 
             background: linear-gradient(135deg, #00D4FF, #0099FF);
@@ -182,55 +165,24 @@
             align-items: center;
             justify-content: flex-start;
             transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.3), inset 0 2px 5px rgba(255,255,255,0.4);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.3);
             position: relative;
             overflow: hidden;
-        }
-        .book-btn::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent);
-            pointer-events: none;
         }
         .book-emoji {
             font-size: 2.5rem;
             margin: 8px 0;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .book-image {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 5px 0;
-            border: 3px solid rgba(255,255,255,0.7);
-        }
-        .book-btn:hover { 
-            transform: scale(1.1) rotate(-3deg);
-            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4), inset 0 2px 5px rgba(255,255,255,0.4);
-        }
-        .book-btn:active { transform: scale(0.95) rotate(0deg); }
+        .book-btn:hover { transform: scale(1.1) rotate(-3deg); }
         .book-btn.selected {
             background: linear-gradient(135deg, #FFD700, #FFF000);
             border-color: #FF1493;
             color: #FF1493;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5), inset 0 2px 5px rgba(255,255,255,0.6);
         }
         .book-title { 
-            font-size: 0.5rem; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-size: 0.8rem; 
             font-weight: bold;
-            line-height: 1;
             margin-top: auto;
-            padding-top: 3px;
-            max-height: 20px;
-            overflow: hidden;
-            word-break: break-word;
         }
         input[type="file"] {
             padding: 8px;
@@ -238,14 +190,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-family: 'Comic Sans MS', 'Trebuchet MS', 'Arial', sans-serif;
-        }
-        .preview-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-top: 10px;
-            border: 2px solid #FF1493;
         }
         .badge-grid {
             display: grid;
@@ -300,7 +244,6 @@
             <button class="tab-btn" onclick="showTab('manage')">⚙️ Add New</button>
         </div>
         
-        <!-- ACTIVITIES -->
         <div id="activities" class="content active">
             <h2>📚 My Learning Activities</h2>
             <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
@@ -345,7 +288,6 @@
             </div>
         </div>
         
-        <!-- BOOKS -->
         <div id="books" class="content">
             <h2>📖 Pick a Book to Read!</h2>
             <div class="section">
@@ -358,7 +300,6 @@
             </div>
         </div>
         
-        <!-- REWARDS -->
         <div id="rewards" class="content">
             <h2>🏆 My Rewards & Badges</h2>
             <p style="color: #FF1493; font-weight: bold; margin-bottom: 15px;">Click badges to award them!</p>
@@ -372,7 +313,6 @@
             </div>
         </div>
         
-        <!-- MANAGE -->
         <div id="manage" class="content">
             <h2>➕ Add New Items</h2>
             <div class="section">
@@ -381,7 +321,7 @@
                 <input type="text" id="bookDesc" placeholder="Book Description (e.g., Fun adventure!)">
                 <label for="bookPhoto" style="display: block; font-weight: bold; color: #FF1493; margin: 10px 0;">Upload Book Photo (optional):</label>
                 <input type="file" id="bookPhoto" accept="image/*">
-                <img id="photoPreview" class="preview-img" style="display: none;">
+                <img id="photoPreview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 2px solid #FF1493; display: none;">
                 <button class="btn" onclick="addBook()">Add Book</button>
                 <div id="bookList" style="margin-top: 15px;"></div>
             </div>
@@ -400,15 +340,48 @@
             <h3 id="confirmTitle" style="font-size: 1.3rem; color: #FF1493; margin-bottom: 15px;">Remove this item?</h3>
             <p style="font-size: 1.1rem; margin-bottom: 20px; color: #333;" id="confirmMsg">Are you sure?</p>
             <button onclick="closeConfirm()" style="background: #95a5a6; color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Cancel</button>
-            <button id="confirmBtn" onclick="confirmDelete()" style="background: linear-gradient(135deg, #FF6B6B, #FF1493); color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Yes, Remove</button>
+            <button onclick="confirmDelete()" style="background: linear-gradient(135deg, #FF6B6B, #FF1493); color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Yes, Remove</button>
         </div>
     </div>
 
     <script>
-        let books = [["📚", "Bob Books", null, "Fun books to help with reading!"], ["🐛", "Very Hungry Caterpillar", null, "A caterpillar's amazing journey!"], ["👑", "Where Wild Things Are", null, "An adventure in a magical forest!"], ["🧸", "Corduroy", null, "A teddy bear looking for love!"]];
-        let badges = [["🌟", "Star Learner"], ["🎯", "Super Reader"], ["🏆", "Spelling Champ"], ["🎨", "Art Master"], ["🔬", "Science Explorer"], ["💪", "Try Hard Hero"], ["🎉", "Awesome Achiever"], ["👑", "Learning Queen"]];
-        let earnedBadges = [];
-        let selectedBook = null;
+        const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
+        const DEVICE_ID = 'juliette_' + Math.random().toString(36).substr(2, 9);
+
+        function saveToFirebase(data) {
+            fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json', {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            }).catch(error => console.log('Firebase save error:', error));
+        }
+
+        function loadFromFirebase() {
+            fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        books = data.books || books;
+                        badges = data.badges || badges;
+                        earnedBadges = data.earnedBadges || [];
+                        selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
+                        
+                        if (data.checkboxStates) {
+                            Object.keys(data.checkboxStates).forEach(checkboxId => {
+                                const checkbox = document.getElementById(checkboxId);
+                                if (checkbox) {
+                                    checkbox.checked = data.checkboxStates[checkboxId];
+                                    updateActivityCard(parseInt(checkboxId.substring(1)));
+                                }
+                            });
+                        }
+                        
+                        displayBooks();
+                        displayRewards();
+                        console.log('Firebase sync loaded');
+                    }
+                })
+                .catch(error => console.log('Firebase load error:', error));
+        }
 
         function showTab(tab) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -424,11 +397,7 @@
             let html = '';
             books.forEach((b, i) => {
                 html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
-                if (b[2]) {
-                    html += '<img src="' + b[2] + '" class="book-image" alt="' + b[1] + '">';
-                } else {
-                    html += '<div class="book-emoji">' + b[0] + '</div>';
-                }
+                html += '<div class="book-emoji">' + b[0] + '</div>';
                 html += '<div class="book-title">' + b[1] + '</div></div>';
             });
             document.getElementById('bookGrid').innerHTML = html;
@@ -515,32 +484,6 @@
             document.getElementById('photoPreview').style.display = 'none';
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const photoInput = document.getElementById('bookPhoto');
-            if (photoInput) {
-                photoInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const preview = document.getElementById('photoPreview');
-                            preview.src = e.target.result;
-                            preview.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        });
-
-        function deleteBook(idx) {
-            if (books.length <= 1) return alert('Keep at least one book!');
-            deleteTarget = { type: 'book', idx: idx };
-            document.getElementById('confirmTitle').innerHTML = 'Remove Book?';
-            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + books[idx][1] + '</strong>?';
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-
         function addBadge() {
             const emoji = document.getElementById('badgeEmoji').value.trim();
             const title = document.getElementById('badgeTitle').value.trim();
@@ -551,14 +494,6 @@
             displayRewards();
             displayManage();
             save();
-        }
-
-        function deleteBadge(idx) {
-            if (badges.length <= 1) return alert('Keep at least one badge!');
-            deleteTarget = { type: 'badge', idx: idx };
-            document.getElementById('confirmTitle').innerHTML = 'Remove Badge?';
-            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + badges[idx][1] + '</strong>?';
-            document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function displayManage() {
@@ -577,8 +512,6 @@
             html += '</div>';
             document.getElementById('badgeList').innerHTML = html;
         }
-
-        let deleteTarget = null;
 
         function deleteBook(idx) {
             if (books.length <= 1) return alert('Keep at least one book!');
@@ -634,6 +567,23 @@
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 localStorage.setItem(c.id, c.checked);
             });
+
+            // Also save to Firebase
+            const checkboxStates = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                checkboxStates[c.id] = c.checked;
+            });
+
+            const data = {
+                books: books,
+                badges: badges,
+                earnedBadges: earnedBadges,
+                selectedBook: selectedBook,
+                checkboxStates: checkboxStates,
+                lastUpdated: new Date().toISOString()
+            };
+
+            saveToFirebase(data);
         }
 
         function load() {
@@ -648,17 +598,17 @@
             
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 c.checked = localStorage.getItem(c.id) === 'true';
-                c.addEventListener('change', save);
             });
+
+            // Load from Firebase
+            loadFromFirebase();
         }
 
         function toggleActivityCard(card, event) {
-            // If user clicked directly on the checkbox, let it handle itself
             if (event && event.target.tagName === 'INPUT') {
                 return;
             }
             
-            // Otherwise, toggle the checkbox
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
             const num = parseInt(card.id.substring(1));
@@ -677,35 +627,27 @@
             save();
         }
 
-        function initializeActivities() {
-            for (let i = 1; i <= 9; i++) {
-                const checkbox = document.getElementById('c' + i);
-                const card = document.getElementById('a' + i);
-                
-                if (checkbox && card) {
-                    if (checkbox.checked) {
-                        card.classList.add('checked');
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoInput = document.getElementById('bookPhoto');
+            if (photoInput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('photoPreview');
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
                     }
-                    
-                    checkbox.addEventListener('change', function() {
-                        if (this.checked) {
-                            card.classList.add('checked');
-                        } else {
-                            card.classList.remove('checked');
-                        }
-                        save();
-                    });
-                }
+                });
             }
-        }
 
-        // Load data and initialize on page load
-        window.addEventListener('load', function() {
             load();
             displayBooks();
             displayRewards();
             displayManage();
-            initializeActivities();
         });
     </script>
 </body>
