@@ -24,8 +24,7 @@
             border: 5px solid #FFD700;
         }
         .header h1 { color: white; font-size: 2.5rem; text-shadow: 3px 3px 0px rgba(0,0,0,0.3); }
-        
-        /* TABS */
+        .header p { color: white; font-size: 1.2rem; margin-top: 10px; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn { 
             background: linear-gradient(135deg, #00D4FF, #0099FF);
@@ -35,259 +34,212 @@
             font-weight: 700; 
             color: white; 
             border: 4px solid white;
+            font-size: 1rem;
             transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .tab-btn.active { background: linear-gradient(135deg, #FF1493, #FF69B4); border-color: #FFD700; }
-
         .content { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
-            display: none;
-            border: 5px solid #FFD700;
+            background: white; padding: 25px; border-radius: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: none; border: 5px solid #FFD700;
         }
         .content.active { display: block; }
-
-        /* ACTIVITIES */
+        .section { background: #FFE4E1; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 3px dashed #FF69B4; }
         .activity-card {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 12px;
-            border: 3px solid #FFD700;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px;
+            border: 3px solid #FFD700; display: flex; align-items: center; gap: 15px; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .activity-card.checked { background: linear-gradient(135deg, #98FF98, #00FF00); border-color: #00AA00; transform: scale(1.02); }
+        input[type="checkbox"] { width: 40px; height: 40px; cursor: pointer; accent-color: #00AA00; }
         
-        /* Pulse when checked */
-        @keyframes activityPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        .activity-card.checked {
-            background: #eaffea;
-            border-color: #00AA00;
-            animation: activityPulse 0.3s ease-out;
-        }
-
-        input[type="checkbox"] {
-            width: 35px;
-            height: 35px;
-            accent-color: #00AA00;
-        }
-
-        /* BADGES */
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-        }
-        
+        /* POP ANIMATION FOR BADGES */
         @keyframes badgePop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3) rotate(10deg); }
+            50% { transform: scale(1.4) rotate(10deg); }
             100% { transform: scale(1.1) rotate(5deg); }
         }
-
-        .badge-btn {
-            background: #f0f0f0;
-            padding: 20px;
-            border-radius: 15px;
-            border: 3px solid #ddd;
-            font-size: 2rem;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .badge-btn.earned {
-            background: linear-gradient(135deg, #FFF7AD, #FFD700);
-            border-color: #FF1493;
-            animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .btn { 
-            background: #0099FF; color: white; padding: 10px 20px; 
-            border-radius: 10px; border: none; font-weight: bold; cursor: pointer;
-        }
-        .btn-danger { background: #FF4444; margin-bottom: 15px; }
-
-        /* BOOKS */
-        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-        .book-btn { border: 3px solid #FFD700; padding: 10px; border-radius: 10px; text-align: center; cursor: pointer; }
-        .book-btn.selected { background: #FFF7AD; border-color: #FF1493; }
+        .badge-btn { background: linear-gradient(135deg, #FFD700, #FFA500); padding: 20px; border-radius: 15px; border: 4px solid #FF1493; font-size: 2.2rem; cursor: pointer; transition: all 0.3s; }
+        .badge-btn.earned { animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; border-color: #00AA00; background: linear-gradient(135deg, #98FF98, #00FF00); }
+        
+        /* REST OF STYLE RETAINED */
+        .btn { background: #0099FF; color: white; padding: 12px 20px; border: 3px solid white; border-radius: 15px; cursor: pointer; font-weight: 700; }
+        .btn-danger { background: #FF6B6B; }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .book-btn { background: #FF69B4; padding: 10px; border-radius: 12px; border: 4px solid #FF1493; text-align: center; cursor: pointer; color: white; }
+        .book-btn.selected { background: #FFD700; color: #FF1493; }
+        .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Juliette's Learning Adventure! 🎉</h1>
+            <p>Learn, Play, and Earn Rewards!</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('activities')">📚 Learning Activities</button>
+            <button class="tab-btn" onclick="showTab('books')">📖 Pick a Book</button>
+            <button class="tab-btn" onclick="showTab('rewards')">🏆 Rewards</button>
+            <button class="tab-btn" onclick="showTab('manage')">⚙️ Add New</button>
+        </div>
+        
+        <div id="activities" class="content active">
+            <h2>📚 My Learning Activities</h2>
+            <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
+            <div class="section" id="activitySection"></div>
+        </div>
+        
+        <div id="books" class="content">
+            <h2>📖 Pick a Book!</h2>
+            <div class="book-grid" id="bookGrid"></div>
+            <div id="currentBook" style="margin-top:20px; font-weight:bold;"></div>
+        </div>
+        
+        <div id="rewards" class="content">
+            <h2>🏆 My Rewards</h2>
+            <div class="badge-grid" id="badgeGrid"></div>
+            <h3>Badges Earned 🎉</h3>
+            <div id="earnedDisplay" style="display:flex; gap:10px; margin-top:10px;"></div>
+        </div>
 
-<div class="container">
-    <div class="header">
-        <h1>🎉 Juliette's Dashboard 🎉</h1>
+        <div id="manage" class="content">
+            <h2>➕ Add New Items</h2>
+            <div class="section">
+                <input type="text" id="badgeEmoji" placeholder="Emoji">
+                <input type="text" id="badgeTitle" placeholder="Name">
+                <button class="btn" onclick="addBadge()">Add Badge</button>
+            </div>
+        </div>
     </div>
-    
-    <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('activities')">📚 Activities</button>
-        <button class="tab-btn" onclick="showTab('books')">📖 Books</button>
-        <button class="tab-btn" onclick="showTab('rewards')">🏆 Rewards</button>
-    </div>
-    
-    <div id="activities" class="content active">
-        <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
-        <div id="activitySection"></div>
-    </div>
-    
-    <div id="books" class="content">
-        <div class="book-grid" id="bookGrid"></div>
-    </div>
-    
-    <div id="rewards" class="content">
-        <h3>Click a badge to earn it!</h3>
-        <div class="badge-grid" id="badgeGrid"></div>
-        <hr style="margin: 20px 0;">
-        <h3>My Collection</h3>
-        <div id="earnedDisplay" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
-    </div>
-</div>
 
-<script>
-    // --- AUDIO ---
-    const woodBlockSound = new Audio('https://www.soundjay.com/button/sounds/button-20.mp3'); 
-    const rewardChime = new Audio('https://www.soundjay.com/communication/sounds/bell-ringing-05.mp3');
-    
-    woodBlockSound.volume = 0.15;
-    rewardChime.volume = 0.1;
+    <script>
+        // --- FIXED SOUNDS ---
+        // Using high-quality sound links
+        const woodBlockSound = new Audio('https://www.soundjay.com/button/sounds/button-20.mp3'); 
+        const rewardChime = new Audio('https://www.soundjay.com/communication/sounds/bell-ringing-05.mp3');
+        
+        woodBlockSound.volume = 0.2; 
+        rewardChime.volume = 0.1;
 
-    // --- DATA ---
-    const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
-    const DEVICE_ID = 'juliette_shared_data';
+        const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
+        const DEVICE_ID = 'juliette_shared_data';
 
-    let books = [["📚", "Adventure Time"], ["🧚", "Fairy Tales"]];
-    let badges = [["🌟", "Star"], ["🏆", "Champ"], ["🎨", "Artist"], ["🧠", "Smarty"]];
-    let earnedBadges = [];
-    let selectedBook = null;
+        let books = [["📚", "My First Book", null, "A fun start!"]];
+        let badges = [["🌟", "Star Learner"], ["🏅", "Hard Worker"], ["🎨", "Artist"], ["📖", "Book Worm"]];
+        let earnedBadges = [];
+        let selectedBook = null;
 
-    const activityList = [
-        {id: 1, label: "📱 Reading.com"},
-        {id: 2, label: "🌊 SplashLearn"},
-        {id: 3, label: "🌍 Lingokids"},
-        {id: 4, label: "🎓 Khan Academy Kids"},
-        {id: 5, label: "📚 Bob Books"},
-        {id: 6, label: "🎨 Arts & Crafts"}
-    ];
+        const activityList = [
+            {id: 1, label: "📱 Reading.com"}, {id: 2, label: "🌊 SplashLearn"},
+            {id: 3, label: "🌍 Lingokids"}, {id: 4, label: "🎓 Khan Academy Kids"},
+            {id: 5, label: "📚 Bob Books"}, {id: 6, label: "📖 Readers & Books"},
+            {id: 7, label: "✏️ Grooved Books"}, {id: 8, label: "🎨 Arts & Crafts"},
+            {id: 9, label: "🔬 Science Projects"}
+        ];
 
-    function playSound(type) {
-        const s = (type === 'wood') ? woodBlockSound : rewardChime;
-        s.currentTime = 0;
-        s.play().catch(() => console.log("Click page to enable sound"));
-    }
-
-    function showTab(tab) {
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tab).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-
-    function renderActivities() {
-        let html = '';
-        activityList.forEach(a => {
-            html += `
-            <div class="activity-card" id="a${a.id}" onclick="handleCardClick(${a.id})">
-                <input type="checkbox" id="c${a.id}" onclick="event.stopPropagation(); updateActivityCard(${a.id})">
-                <span style="font-size:1.2rem; font-weight:bold;">${a.label}</span>
-            </div>`;
-        });
-        document.getElementById('activitySection').innerHTML = html;
-    }
-
-    function handleCardClick(id) {
-        const cb = document.getElementById('c' + id);
-        cb.checked = !cb.checked;
-        updateActivityCard(id);
-    }
-
-    function updateActivityCard(id, silent = false) {
-        const cb = document.getElementById('c' + id);
-        const card = document.getElementById('a' + id);
-        if (cb.checked) {
-            card.classList.add('checked');
-            if (!silent) playSound('wood');
-        } else {
-            card.classList.remove('checked');
+        function playSound(type) {
+            const s = (type === 'wood') ? woodBlockSound : rewardChime;
+            s.currentTime = 0;
+            s.play().catch(() => console.log("User must interact with page first"));
         }
-        save();
-    }
 
-    function toggleBadge(idx) {
-        if (earnedBadges.includes(idx)) {
-            earnedBadges = earnedBadges.filter(i => i !== idx);
-        } else {
-            earnedBadges.push(idx);
-            playSound('reward');
+        function renderActivities() {
+            let html = '';
+            activityList.forEach(a => {
+                html += `
+                <div class="activity-card" id="a${a.id}" onclick="handleCardClick(${a.id})">
+                    <input type="checkbox" id="c${a.id}" onclick="event.stopPropagation(); updateActivityCard(${a.id})">
+                    <label style="flex:1; cursor:pointer;">${a.label}</label>
+                </div>`;
+            });
+            document.getElementById('activitySection').innerHTML = html;
         }
-        displayRewards();
-        save();
-    }
 
-    function displayRewards() {
-        let gridHtml = '';
-        badges.forEach((b, i) => {
-            const isEarned = earnedBadges.includes(i);
-            gridHtml += `<div class="badge-btn ${isEarned ? 'earned' : ''}" onclick="toggleBadge(${i})">${b[0]}</div>`;
-        });
-        document.getElementById('badgeGrid').innerHTML = gridHtml;
+        function handleCardClick(id) {
+            const cb = document.getElementById('c' + id);
+            cb.checked = !cb.checked;
+            updateActivityCard(id);
+        }
 
-        let earnedHtml = '';
-        earnedBadges.forEach(i => {
-            earnedHtml += `<div style="font-size:2rem; padding:10px; background:white; border-radius:10px; border:2px solid #FFD700;">${badges[i][0]}</div>`;
-        });
-        document.getElementById('earnedDisplay').innerHTML = earnedHtml || 'Keep working to earn badges!';
-    }
+        function updateActivityCard(id, silent = false) {
+            const cb = document.getElementById('c' + id);
+            const card = document.getElementById('a' + id);
+            if (cb.checked) {
+                card.classList.add('checked');
+                if (!silent) playSound('wood'); // NEW SOUND
+            } else {
+                card.classList.remove('checked');
+            }
+            save();
+        }
 
-    function resetDay() {
-        activityList.forEach(a => {
-            const cb = document.getElementById('c' + a.id);
-            cb.checked = false;
-            updateActivityCard(a.id, true);
-        });
-        save();
-    }
-
-    // --- FIREBASE ---
-    function save() {
-        const states = {};
-        activityList.forEach(a => states['c'+a.id] = document.getElementById('c'+a.id).checked);
-        const data = { earnedBadges, states, selectedBook, books, badges };
-        fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`, { method: 'PUT', body: JSON.stringify(data) });
-    }
-
-    function load() {
-        fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`).then(r => r.json()).then(data => {
-            if (!data) return;
-            earnedBadges = data.earnedBadges || [];
-            if (data.states) {
-                Object.keys(data.states).forEach(id => {
-                    const cb = document.getElementById(id);
-                    if (cb) {
-                        cb.checked = data.states[id];
-                        updateActivityCard(id.replace('c',''), true);
-                    }
-                });
+        function toggleBadge(idx) {
+            if (earnedBadges.includes(idx)) {
+                earnedBadges = earnedBadges.filter(i => i !== idx);
+            } else {
+                earnedBadges.push(idx);
+                playSound('reward'); // OLD CHIME + POP ANIMATION
             }
             displayRewards();
-        });
-    }
+            save();
+        }
 
-    window.onload = () => {
-        renderActivities();
-        load();
-    };
-</script>
+        function showTab(tab) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
 
+        function displayRewards() {
+            let html = '';
+            badges.forEach((b, i) => {
+                const earnedClass = earnedBadges.includes(i) ? 'earned' : '';
+                html += `<div class="badge-btn ${earnedClass}" onclick="toggleBadge(${i})">${b[0]}</div>`;
+            });
+            document.getElementById('badgeGrid').innerHTML = html;
+            
+            let earned = '';
+            earnedBadges.forEach(i => earned += `<div style="font-size:2rem; background:white; padding:10px; border-radius:10px; border:2px solid #00AA00;">${badges[i][0]}</div>`);
+            document.getElementById('earnedDisplay').innerHTML = earned;
+        }
+
+        function save() {
+            const states = {};
+            activityList.forEach(a => {
+                const cb = document.getElementById('c' + a.id);
+                if(cb) states['c'+a.id] = cb.checked;
+            });
+            const data = { books, badges, earnedBadges, selectedBook, states };
+            fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`, { method: 'PUT', body: JSON.stringify(data) });
+        }
+
+        function load() {
+            fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`).then(r => r.json()).then(data => {
+                if (!data) return;
+                if (data.states) {
+                    Object.keys(data.states).forEach(id => {
+                        const cb = document.getElementById(id);
+                        if(cb) { cb.checked = data.states[id]; updateActivityCard(id.replace('c',''), true); }
+                    });
+                }
+                earnedBadges = data.earnedBadges || [];
+                displayRewards();
+            });
+        }
+
+        function resetDay() {
+            activityList.forEach(a => {
+                const cb = document.getElementById('c' + a.id);
+                cb.checked = false;
+                updateActivityCard(a.id, true);
+            });
+            save();
+        }
+
+        window.onload = () => { renderActivities(); load(); };
+    </script>
 </body>
 </html>
