@@ -295,7 +295,6 @@
         
         <div id="rewards" class="content">
             <h2>🏆 My Rewards & Badges</h2>
-            <p style="color: #FF1493; font-weight: bold; margin-bottom: 15px;">Click badges to award them!</p>
             <div class="section">
                 <h3>Available Badges</h3>
                 <div class="badge-grid" id="badgeGrid"></div>
@@ -317,7 +316,7 @@
             </div>
             <div class="section">
                 <h3>Add a Badge</h3>
-                <input type="text" id="badgeEmoji" placeholder="Emoji (e.g., 🌟)" maxlength="5">
+                <input type="text" id="badgeEmoji" placeholder="Emoji" maxlength="5">
                 <input type="text" id="badgeTitle" placeholder="Badge Name">
                 <button class="btn" onclick="addBadge()">Add Badge</button>
                 <div id="badgeList"></div>
@@ -326,23 +325,20 @@
     </div>
 
     <script>
-        // --- UPDATED SOUNDS & VOLUME ---
-        const activityPop = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        // --- RELIABLE AUDIO SETUP ---
+        // Pop sound: A quick "clicky" pop. Reward: The chime.
+        const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         const rewardChime = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
-        // Set volume to half (0.5)
-        activityPop.volume = 0.5;
-        rewardChime.volume = 0.5;
+        // Set volume to very low (20% of max)
+        popSound.volume = 0.2;
+        rewardChime.volume = 0.2;
 
         function playSound(type) {
             try {
-                if (type === 'pop') {
-                    activityPop.currentTime = 0;
-                    activityPop.play();
-                } else if (type === 'chime') {
-                    rewardChime.currentTime = 0;
-                    rewardChime.play();
-                }
+                let s = (type === 'pop') ? popSound : rewardChime;
+                s.currentTime = 0;
+                s.play().catch(e => console.log('Click required first'));
             } catch (e) { console.log('Audio error'); }
         }
 
