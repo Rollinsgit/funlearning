@@ -310,39 +310,40 @@
             <h2>➕ Add New Items</h2>
             <div class="section">
                 <h3>Add a Book</h3>
-                <input type="text" id="bookTitle" placeholder="Book Name (e.g., Bob Books)">
-                <input type="text" id="bookDesc" placeholder="Book Description (e.g., Fun adventure!)">
-                <label for="bookPhoto" style="display: block; font-weight: bold; color: #FF1493; margin: 10px 0;">Upload Book Photo (optional):</label>
+                <input type="text" id="bookTitle" placeholder="Book Name">
                 <input type="file" id="bookPhoto" accept="image/*">
-                <img id="photoPreview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 2px solid #FF1493; display: none;">
                 <button class="btn" onclick="addBook()">Add Book</button>
-                <div id="bookList" style="margin-top: 15px;"></div>
+                <div id="bookList"></div>
             </div>
             <div class="section">
                 <h3>Add a Badge</h3>
                 <input type="text" id="badgeEmoji" placeholder="Emoji (e.g., 🌟)" maxlength="5">
-                <input type="text" id="badgeTitle" placeholder="Badge Name (e.g., Star Learner)">
+                <input type="text" id="badgeTitle" placeholder="Badge Name">
                 <button class="btn" onclick="addBadge()">Add Badge</button>
-                <div id="badgeList" style="margin-top: 15px;"></div>
+                <div id="badgeList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- SOUNDS ---
-        const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2855/2855-preview.mp3');
+        // --- UPDATED SOUNDS & VOLUME ---
+        const activityPop = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
         const rewardChime = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+
+        // Set volume to half (0.5)
+        activityPop.volume = 0.5;
+        rewardChime.volume = 0.5;
 
         function playSound(type) {
             try {
                 if (type === 'pop') {
-                    popSound.currentTime = 0;
-                    popSound.play();
+                    activityPop.currentTime = 0;
+                    activityPop.play();
                 } else if (type === 'chime') {
                     rewardChime.currentTime = 0;
                     rewardChime.play();
                 }
-            } catch (e) { console.log('Sound error'); }
+            } catch (e) { console.log('Audio error'); }
         }
 
         const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
@@ -443,7 +444,7 @@
                 earnedBadges = earnedBadges.filter(i => i !== idx);
             } else {
                 earnedBadges.push(idx);
-                playSound('chime'); // Trigger the fun reward chime
+                playSound('chime');
             }
             displayRewards();
             save();
@@ -489,9 +490,6 @@
         }
 
         function save() {
-            localStorage.setItem('julietteBooks', JSON.stringify(books));
-            localStorage.setItem('julietteBadges', JSON.stringify(badges));
-            localStorage.setItem('julietteEarned', JSON.stringify(earnedBadges));
             const checkboxStates = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(c => {
                 checkboxStates[c.id] = c.checked;
@@ -511,7 +509,7 @@
             const checkbox = document.getElementById('c' + num);
             if (checkbox.checked) {
                 card.classList.add('checked');
-                if (!silent) playSound('pop'); // Trigger the bubble pop sound
+                if (!silent) playSound('pop'); 
             } else {
                 card.classList.remove('checked');
             }
