@@ -96,14 +96,9 @@
             min-height: 50px;
             touch-action: manipulation;
         }
-        .activity-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
         .activity-card.checked {
             background: linear-gradient(135deg, #98FF98, #00FF00);
             border-color: #00AA00;
-            box-shadow: 0 6px 20px rgba(152, 255, 152, 0.4);
         }
         input[type="checkbox"] {
             width: 40px;
@@ -122,104 +117,17 @@
         }
         .btn { 
             background: linear-gradient(135deg, #00D4FF, #0099FF);
-            color: white; 
-            padding: 12px 20px; 
-            border: 3px solid white;
-            border-radius: 15px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            font-size: 1rem;
-            transition: all 0.3s;
-            margin: 10px 10px 10px 0;
+            color: white; padding: 12px 20px; border: 3px solid white;
+            border-radius: 15px; cursor: pointer; font-weight: 700;
         }
-        .btn:hover { transform: scale(1.05); }
         .btn-danger { background: linear-gradient(135deg, #FF6B6B, #FF1493); }
-        input[type="text"] { 
-            padding: 12px; 
-            font-size: 1.1rem; 
-            border-radius: 10px; 
-            border: 3px solid #FFD700; 
-            margin: 10px 0; 
-            width: 100%; 
-            font-family: 'Comic Sans MS', 'Trebuchet MS', 'Arial', sans-serif;
-        }
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-        .book-btn {
-            background: linear-gradient(135deg, #FF69B4, #FFB6D9);
-            padding: 10px;
-            border-radius: 12px 12px 20px 20px;
-            border: 4px solid #FF1493;
-            text-align: center;
-            cursor: pointer;
-            color: white;
-            font-weight: bold;
-            width: 140px;
-            height: 160px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .book-emoji {
-            font-size: 2.5rem;
-            margin: 8px 0;
-        }
-        .book-btn:hover { transform: scale(1.1) rotate(-3deg); }
-        .book-btn.selected {
-            background: linear-gradient(135deg, #FFD700, #FFF000);
-            border-color: #FF1493;
-            color: #FF1493;
-        }
-        .book-title { 
-            font-size: 0.8rem; 
-            font-weight: bold;
-            margin-top: auto;
-        }
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 12px;
-            margin: 15px 0;
-        }
-        .badge-btn {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            padding: 20px;
-            border-radius: 15px;
-            border: 4px solid #FF1493;
-            font-size: 2.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .badge-btn:hover { transform: scale(1.1) rotate(5deg); }
-        .badge-btn.earned {
-            background: linear-gradient(135deg, #98FF98, #00FF00);
-            border-color: #00AA00;
-        }
-        .badge-label { font-size: 0.75rem; margin-top: 5px; font-weight: bold; }
-        .earned-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 10px;
-        }
-        .earned-badge {
-            background: linear-gradient(135deg, #98FF98, #00FF00);
-            padding: 12px;
-            border-radius: 12px;
-            border: 3px solid #00AA00;
-            font-size: 1.8rem;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        input[type="text"] { padding: 12px; border-radius: 10px; border: 3px solid #FFD700; width: 100%; margin: 10px 0; }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .book-btn { background: #FFB6D9; padding: 10px; border-radius: 15px; border: 4px solid #FF1493; text-align: center; cursor: pointer; color: white; }
+        .book-btn.selected { background: #FFD700; color: #FF1493; }
+        .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+        .badge-btn { background: #FFD700; padding: 20px; border-radius: 15px; border: 4px solid #FF1493; font-size: 2rem; cursor: pointer; }
+        .badge-btn.earned { background: #98FF98; border-color: #00AA00; }
     </style>
 </head>
 <body>
@@ -227,7 +135,6 @@
         <div class="header">
             <h1>🎉 Juliette's Learning Adventure! 🎉</h1>
             <p>Learn, Play, and Earn Rewards!</p>
-            <div style="font-size: 2rem; margin-top: 10px;">⭐⭐⭐⭐⭐</div>
         </div>
         
         <div class="tabs">
@@ -282,64 +189,45 @@
         </div>
         
         <div id="books" class="content">
-            <h2>📖 Pick a Book to Read!</h2>
-            <div class="section">
-                <h3>Click a book to choose it!</h3>
-                <div class="book-grid" id="bookGrid"></div>
-            </div>
-            <div class="section">
-                <h3>Current Choice:</h3>
-                <div id="currentBook" style="font-size: 1.2rem; color: #FF1493; font-weight: bold; padding: 15px; background: #FFF0F5; border-radius: 10px; border: 3px solid #FFD700;">Pick a book!</div>
-            </div>
+            <h2>📖 Pick a Book!</h2>
+            <div class="book-grid" id="bookGrid"></div>
+            <div id="currentBook" style="margin-top:20px; font-weight:bold;">Pick a book!</div>
         </div>
         
         <div id="rewards" class="content">
-            <h2>🏆 My Rewards & Badges</h2>
-            <div class="section">
-                <h3>Available Badges</h3>
-                <div class="badge-grid" id="badgeGrid"></div>
-            </div>
-            <div class="section">
-                <h3>Badges Earned 🎉</h3>
-                <div class="earned-display" id="earnedDisplay"></div>
-            </div>
+            <h2>🏆 Rewards</h2>
+            <div class="badge-grid" id="badgeGrid"></div>
+            <h3>Badges Earned 🎉</h3>
+            <div id="earnedDisplay" style="display:flex; gap:10px; margin-top:10px;"></div>
         </div>
         
         <div id="manage" class="content">
-            <h2>➕ Add New Items</h2>
+            <h2>⚙️ Manage</h2>
             <div class="section">
-                <h3>Add a Book</h3>
+                <h3>Add Book</h3>
                 <input type="text" id="bookTitle" placeholder="Book Name">
                 <input type="file" id="bookPhoto" accept="image/*">
-                <button class="btn" onclick="addBook()">Add Book</button>
+                <button class="btn" onclick="addBook()">Add</button>
                 <div id="bookList"></div>
-            </div>
-            <div class="section">
-                <h3>Add a Badge</h3>
-                <input type="text" id="badgeEmoji" placeholder="Emoji" maxlength="5">
-                <input type="text" id="badgeTitle" placeholder="Badge Name">
-                <button class="btn" onclick="addBadge()">Add Badge</button>
-                <div id="badgeList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- RELIABLE AUDIO SETUP ---
-        // Pop sound: A quick "clicky" pop. Reward: The chime.
-        const popSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-        const rewardChime = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        // --- QUIET SOUNDS ---
+        const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        const chimeSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
 
-        // Set volume to very low (20% of max)
-        popSound.volume = 0.2;
-        rewardChime.volume = 0.2;
+        // Set volume to very low
+        clickSound.volume = 0.05;
+        chimeSound.volume = 0.05;
 
         function playSound(type) {
             try {
-                let s = (type === 'pop') ? popSound : rewardChime;
+                let s = (type === 'click') ? clickSound : chimeSound;
                 s.currentTime = 0;
-                s.play().catch(e => console.log('Click required first'));
-            } catch (e) { console.log('Audio error'); }
+                s.play().catch(e => {}); // Catch browser block
+            } catch (e) {}
         }
 
         const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
@@ -354,25 +242,24 @@
             fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json', {
                 method: 'PUT',
                 body: JSON.stringify(data)
-            }).catch(error => console.log('Firebase save error:', error));
+            }).catch(e => {});
         }
 
         function loadFromFirebase() {
             fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json')
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
                     if (data) {
                         books = data.books || books;
                         badges = data.badges || badges;
                         earnedBadges = data.earnedBadges || [];
                         selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
-                        
                         if (data.checkboxStates) {
-                            Object.keys(data.checkboxStates).forEach(checkboxId => {
-                                const checkbox = document.getElementById(checkboxId);
-                                if (checkbox) {
-                                    checkbox.checked = data.checkboxStates[checkboxId];
-                                    updateActivityCard(parseInt(checkboxId.substring(1)), true);
+                            Object.keys(data.checkboxStates).forEach(id => {
+                                const cb = document.getElementById(id);
+                                if (cb) {
+                                    cb.checked = data.checkboxStates[id];
+                                    updateActivityCard(parseInt(id.substring(1)), true);
                                 }
                             });
                         }
@@ -388,51 +275,25 @@
             document.getElementById(tab).classList.add('active');
             event.target.classList.add('active');
             if (tab === 'manage') displayManage();
-            if (tab === 'books') displayBooks();
-            if (tab === 'rewards') displayRewards();
         }
 
-        function displayBooks() {
-            let html = '';
-            books.forEach((b, i) => {
-                html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
-                if (b[2]) {
-                    html += '<img src="' + b[2] + '" style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin: 5px 0; border: 3px solid rgba(255,255,255,0.7);">';
-                } else { html += '<div class="book-emoji">' + b[0] + '</div>'; }
-                html += '<div class="book-title">' + b[1] + '</div></div>';
-            });
-            document.getElementById('bookGrid').innerHTML = html;
-            updateBookDisplay();
+        function toggleActivityCard(card, event) {
+            if (event && event.target.tagName === 'INPUT') return;
+            const cb = card.querySelector('input[type="checkbox"]');
+            cb.checked = !cb.checked;
+            updateActivityCard(parseInt(card.id.substring(1)));
         }
 
-        function selectBook(idx) {
-            selectedBook = selectedBook === idx ? null : idx;
-            displayBooks();
-            save();
-        }
-
-        function updateBookDisplay() {
-            if (selectedBook !== null) {
-                let display = '<div style="font-size: 1.5rem; margin-bottom: 10px;">' + books[selectedBook][0] + '</div>';
-                display += '<div style="font-size: 1.3rem; color: #FF1493; font-weight: bold; margin-bottom: 10px;">' + books[selectedBook][1] + '</div>';
-                document.getElementById('currentBook').innerHTML = display;
+        function updateActivityCard(num, silent = false) {
+            const card = document.getElementById('a' + num);
+            const cb = document.getElementById('c' + num);
+            if (cb.checked) {
+                card.classList.add('checked');
+                if (!silent) playSound('click');
             } else {
-                document.getElementById('currentBook').innerHTML = 'Pick a book!';
+                card.classList.remove('checked');
             }
-        }
-
-        function displayRewards() {
-            let html = '';
-            badges.forEach((b, i) => {
-                html += '<div class="badge-btn ' + (earnedBadges.includes(i) ? 'earned' : '') + '" onclick="toggleBadge(' + i + ')"><div>' + b[0] + '</div><div class="badge-label">' + b[1] + '</div></div>';
-            });
-            document.getElementById('badgeGrid').innerHTML = html;
-            
-            let earned = '';
-            earnedBadges.forEach(i => {
-                earned += '<div class="earned-badge">' + badges[i][0] + '</div>';
-            });
-            document.getElementById('earnedDisplay').innerHTML = earned || 'Earn some badges!';
+            save();
         }
 
         function toggleBadge(idx) {
@@ -446,70 +307,43 @@
             save();
         }
 
-        function addBook() {
-            const title = document.getElementById('bookTitle').value.trim();
-            const photoFile = document.getElementById('bookPhoto').files[0];
-            if (!title) return;
-            if (photoFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    books.push(["📚", title, e.target.result, "A great book!"]);
-                    displayBooks(); displayManage(); save();
-                };
-                reader.readAsDataURL(photoFile);
-            } else {
-                books.push(["📚", title, null, "A great book!"]);
-                displayBooks(); displayManage(); save();
-            }
-        }
-
-        function addBadge() {
-            const emoji = document.getElementById('badgeEmoji').value.trim();
-            const title = document.getElementById('badgeTitle').value.trim();
-            if (!emoji || !title) return;
-            badges.push([emoji, title]);
-            displayRewards(); displayManage(); save();
-        }
-
-        function displayManage() {
+        function displayBooks() {
             let html = '';
             books.forEach((b, i) => {
-                html += '<div style="background: #E1F5FF; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between;">' + b[1] + '<button class="btn" onclick="books.splice(' + i + ',1); displayManage(); save();">X</button></div>';
+                html += `<div class="book-btn ${selectedBook === i ? 'selected' : ''}" onclick="selectBook(${i})">
+                    <div style="font-size:2rem">${b[0]}</div><div>${b[1]}</div></div>`;
             });
-            document.getElementById('bookList').innerHTML = html;
+            document.getElementById('bookGrid').innerHTML = html;
+        }
+
+        function selectBook(idx) {
+            selectedBook = (selectedBook === idx) ? null : idx;
+            displayBooks();
+            save();
+        }
+
+        function displayRewards() {
+            let html = '';
+            badges.forEach((b, i) => {
+                html += `<div class="badge-btn ${earnedBadges.includes(i) ? 'earned' : ''}" onclick="toggleBadge(${i})">${b[0]}</div>`;
+            });
+            document.getElementById('badgeGrid').innerHTML = html;
+            
+            let earnedHtml = '';
+            earnedBadges.forEach(i => earnedHtml += `<div style="font-size:2rem">${badges[i][0]}</div>`);
+            document.getElementById('earnedDisplay').innerHTML = earnedHtml;
         }
 
         function resetDay() {
             document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-            document.querySelectorAll('.activity-card').forEach(card => card.classList.remove('checked'));
+            document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('checked'));
             save();
         }
 
         function save() {
             const checkboxStates = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                checkboxStates[c.id] = c.checked;
-            });
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => checkboxStates[c.id] = c.checked);
             saveToFirebase({ books, badges, earnedBadges, selectedBook, checkboxStates });
-        }
-
-        function toggleActivityCard(card, event) {
-            if (event && event.target.tagName === 'INPUT') return;
-            const checkbox = card.querySelector('input[type="checkbox"]');
-            checkbox.checked = !checkbox.checked;
-            updateActivityCard(parseInt(card.id.substring(1)));
-        }
-
-        function updateActivityCard(num, silent = false) {
-            const card = document.getElementById('a' + num);
-            const checkbox = document.getElementById('c' + num);
-            if (checkbox.checked) {
-                card.classList.add('checked');
-                if (!silent) playSound('pop'); 
-            } else {
-                card.classList.remove('checked');
-            }
-            save();
         }
 
         document.addEventListener('DOMContentLoaded', loadFromFirebase);
