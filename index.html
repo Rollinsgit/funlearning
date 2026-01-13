@@ -184,6 +184,13 @@
             font-weight: bold;
             margin-top: auto;
         }
+        input[type="file"] {
+            padding: 8px;
+            border: 3px solid #FFD700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', 'Trebuchet MS', 'Arial', sans-serif;
+        }
         .badge-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -227,6 +234,7 @@
         <div class="header">
             <h1>🎉 Juliette's Learning Adventure! 🎉</h1>
             <p>Learn, Play, and Earn Rewards!</p>
+            <div style="font-size: 2rem; margin-top: 10px;">⭐⭐⭐⭐⭐</div>
         </div>
         
         <div class="tabs">
@@ -281,8 +289,9 @@
         </div>
         
         <div id="books" class="content">
-            <h2>📖 Pick a Book!</h2>
+            <h2>📖 Pick a Book to Read!</h2>
             <div class="section">
+                <h3>Click a book to choose it!</h3>
                 <div class="book-grid" id="bookGrid"></div>
             </div>
             <div class="section">
@@ -292,8 +301,10 @@
         </div>
         
         <div id="rewards" class="content">
-            <h2>🏆 My Rewards</h2>
+            <h2>🏆 My Rewards & Badges</h2>
+            <p style="color: #FF1493; font-weight: bold; margin-bottom: 15px;">Click badges to award them!</p>
             <div class="section">
+                <h3>Available Badges</h3>
                 <div class="badge-grid" id="badgeGrid"></div>
             </div>
             <div class="section">
@@ -303,33 +314,51 @@
         </div>
         
         <div id="manage" class="content">
-            <h2>⚙️ Add New Items</h2>
+            <h2>➕ Add New Items</h2>
             <div class="section">
                 <h3>Add a Book</h3>
-                <input type="text" id="bookTitle" placeholder="Book Name">
+                <input type="text" id="bookTitle" placeholder="Book Name (e.g., Bob Books)">
+                <input type="text" id="bookDesc" placeholder="Book Description (e.g., Fun adventure!)">
+                <label for="bookPhoto" style="display: block; font-weight: bold; color: #FF1493; margin: 10px 0;">Upload Book Photo (optional):</label>
                 <input type="file" id="bookPhoto" accept="image/*">
+                <img id="photoPreview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 2px solid #FF1493; display: none;">
                 <button class="btn" onclick="addBook()">Add Book</button>
                 <div id="bookList" style="margin-top: 15px;"></div>
+            </div>
+            <div class="section">
+                <h3>Add a Badge</h3>
+                <input type="text" id="badgeEmoji" placeholder="Emoji (e.g., 🌟)" maxlength="5">
+                <input type="text" id="badgeTitle" placeholder="Badge Name (e.g., Star Learner)">
+                <button class="btn" onclick="addBadge()">Add Badge</button>
+                <div id="badgeList" style="margin-top: 15px;"></div>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- UPDATED SOUNDS ---
-        // New click sound (Built-in Base64 to ensure it works on iPad)
-        const activityClick = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTdvT18AZ2hoaGZlZGVkY2JiYmBhYWBfX19fXl5eXV1dXVxcXFxbW1tbWlpaWlpZWVlZWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFg=');
-        const rewardChime = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+    <div id="confirmModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 25px; border-radius: 20px; max-width: 350px; text-align: center; border: 5px solid #FFD700; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <h3 id="confirmTitle" style="font-size: 1.3rem; color: #FF1493; margin-bottom: 15px;">Remove this item?</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 20px; color: #333;" id="confirmMsg">Are you sure?</p>
+            <button onclick="closeConfirm()" style="background: #95a5a6; color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Cancel</button>
+            <button onclick="confirmDelete()" style="background: linear-gradient(135deg, #FF6B6B, #FF1493); color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Yes, Remove</button>
+        </div>
+    </div>
 
-        // VOLUME SET TO 0.1 (10%)
-        activityClick.volume = 0.1;
-        rewardChime.volume = 0.1;
+    <script>
+        // --- QUIET SOUNDS SETUP ---
+        const woodBlockSound = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
+        const rewardChime = new Audio('https://www.soundjay.com/misc/sounds/bell-ring-01.mp3');
+        
+        // Low volume (0.05 is 5%)
+        woodBlockSound.volume = 0.05;
+        rewardChime.volume = 0.05;
 
         function playSound(type) {
             try {
-                let s = (type === 'click') ? activityClick : rewardChime;
+                const s = (type === 'wood') ? woodBlockSound : rewardChime;
                 s.currentTime = 0;
-                s.play().catch(e => { console.log("Sound interaction needed"); });
-            } catch (e) { console.log("Audio Error"); }
+                s.play().catch(e => console.log("Sound interaction block"));
+            } catch (e) {}
         }
 
         const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
@@ -339,36 +368,40 @@
         let badges = [["🌟", "Star Learner"], ["🏅", "Hard Worker"], ["🎨", "Artist"], ["📖", "Book Worm"]];
         let earnedBadges = [];
         let selectedBook = null;
+        let deleteTarget = null;
 
         function saveToFirebase(data) {
             fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json', {
                 method: 'PUT',
                 body: JSON.stringify(data)
-            });
+            }).catch(error => console.log('Firebase save error:', error));
         }
 
         function loadFromFirebase() {
             fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json')
-                .then(r => r.json())
+                .then(response => response.json())
                 .then(data => {
                     if (data) {
                         books = data.books || books;
                         badges = data.badges || badges;
                         earnedBadges = data.earnedBadges || [];
                         selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
+                        
                         if (data.checkboxStates) {
-                            Object.keys(data.checkboxStates).forEach(id => {
-                                const cb = document.getElementById(id);
-                                if (cb) {
-                                    cb.checked = data.checkboxStates[id];
-                                    updateActivityCard(parseInt(id.substring(1)), true);
+                            Object.keys(data.checkboxStates).forEach(checkboxId => {
+                                const checkbox = document.getElementById(checkboxId);
+                                if (checkbox) {
+                                    checkbox.checked = data.checkboxStates[checkboxId];
+                                    updateActivityCard(parseInt(checkboxId.substring(1)), true);
                                 }
                             });
                         }
+                        
                         displayBooks();
                         displayRewards();
                     }
-                });
+                })
+                .catch(error => console.log('Firebase load error:', error));
         }
 
         function showTab(tab) {
@@ -379,23 +412,56 @@
             if (tab === 'manage') displayManage();
         }
 
-        function toggleActivityCard(card, event) {
-            if (event && event.target.tagName === 'INPUT') return;
-            const cb = card.querySelector('input[type="checkbox"]');
-            cb.checked = !cb.checked;
-            updateActivityCard(parseInt(card.id.substring(1)));
+        function displayBooks() {
+            let html = '';
+            books.forEach((b, i) => {
+                html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
+                if (b[2]) {
+                    html += '<img src="' + b[2] + '" style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin: 5px 0; border: 3px solid rgba(255,255,255,0.7);">';
+                } else {
+                    html += '<div class="book-emoji">' + b[0] + '</div>';
+                }
+                html += '<div class="book-title">' + b[1] + '</div></div>';
+            });
+            document.getElementById('bookGrid').innerHTML = html;
+            updateBookDisplay();
         }
 
-        function updateActivityCard(num, silent = false) {
-            const card = document.getElementById('a' + num);
-            const cb = document.getElementById('c' + num);
-            if (cb.checked) {
-                card.classList.add('checked');
-                if (!silent) playSound('click');
-            } else {
-                card.classList.remove('checked');
-            }
+        function selectBook(idx) {
+            selectedBook = selectedBook === idx ? null : idx;
+            displayBooks();
             save();
+        }
+
+        function updateBookDisplay() {
+            if (selectedBook !== null) {
+                let display = '<div style="font-size: 1.5rem; margin-bottom: 10px;">' + books[selectedBook][0] + '</div>';
+                display += '<div style="font-size: 1.3rem; color: #FF1493; font-weight: bold; margin-bottom: 10px;">' + books[selectedBook][1] + '</div>';
+                if (books[selectedBook][3]) {
+                    display += '<div style="font-size: 1.1rem; color: #666; font-style: italic;">' + books[selectedBook][3] + '</div>';
+                }
+                document.getElementById('currentBook').innerHTML = display;
+            } else {
+                document.getElementById('currentBook').innerHTML = 'Pick a book!';
+            }
+        }
+
+        function displayRewards() {
+            let html = '';
+            badges.forEach((b, i) => {
+                html += '<div class="badge-btn ' + (earnedBadges.includes(i) ? 'earned' : '') + '" onclick="toggleBadge(' + i + ')"><div>' + b[0] + '</div><div class="badge-label">' + b[1] + '</div></div>';
+            });
+            document.getElementById('badgeGrid').innerHTML = html;
+            
+            let earned = '';
+            if (earnedBadges.length === 0) {
+                earned = '<div style="text-align: center; color: #999; padding: 20px;">Click badges above to earn them!</div>';
+            } else {
+                earnedBadges.forEach(i => {
+                    earned += '<div class="earned-badge">' + badges[i][0] + '</div>';
+                });
+            }
+            document.getElementById('earnedDisplay').innerHTML = earned;
         }
 
         function toggleBadge(idx) {
@@ -403,52 +469,171 @@
                 earnedBadges = earnedBadges.filter(i => i !== idx);
             } else {
                 earnedBadges.push(idx);
-                playSound('chime');
+                playSound('reward');
             }
             displayRewards();
             save();
         }
 
-        function displayBooks() {
-            let html = '';
-            books.forEach((b, i) => {
-                html += `<div class="book-btn ${selectedBook === i ? 'selected' : ''}" onclick="selectBook(${i})">
-                    <div class="book-emoji">${b[0]}</div><div class="book-title">${b[1]}</div></div>`;
-            });
-            document.getElementById('bookGrid').innerHTML = html;
+        function addBook() {
+            const title = document.getElementById('bookTitle').value.trim();
+            const desc = document.getElementById('bookDesc').value.trim();
+            const photoFile = document.getElementById('bookPhoto').files[0];
+            if (!title) return alert('Fill in book name!');
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    books.push(["📚", title, e.target.result, desc || 'A great book!']);
+                    clearBookForm();
+                    displayBooks();
+                    displayManage();
+                    save();
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                books.push(["📚", title, null, desc || 'A great book!']);
+                clearBookForm();
+                displayBooks();
+                displayManage();
+                save();
+            }
         }
 
-        function selectBook(idx) {
-            selectedBook = (selectedBook === idx) ? null : idx;
-            displayBooks();
+        function clearBookForm() {
+            document.getElementById('bookTitle').value = '';
+            document.getElementById('bookDesc').value = '';
+            document.getElementById('bookPhoto').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+        }
+
+        function addBadge() {
+            const emoji = document.getElementById('badgeEmoji').value.trim();
+            const title = document.getElementById('badgeTitle').value.trim();
+            if (!emoji || !title) return alert('Fill in emoji and name!');
+            badges.push([emoji, title]);
+            document.getElementById('badgeEmoji').value = '';
+            document.getElementById('badgeTitle').value = '';
+            displayRewards();
+            displayManage();
             save();
         }
 
-        function displayRewards() {
-            let html = '';
-            badges.forEach((b, i) => {
-                html += `<div class="badge-btn ${earnedBadges.includes(i) ? 'earned' : ''}" onclick="toggleBadge(${i})">${b[0]}</div>`;
+        function displayManage() {
+            let html = '<div style="margin-top: 15px;">';
+            books.forEach((b, i) => {
+                let bookInfo = b[1] + (b[3] ? ' - ' + b[3] : '');
+                html += '<div style="background: #E1F5FF; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><div><span>' + bookInfo + '</span>' + (b[2] ? '<br><small style="color: #999;">✓ Has photo</small>' : '') + '</div><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBook(' + i + ')">Remove</button></div>';
             });
-            document.getElementById('badgeGrid').innerHTML = html;
-            
-            let earned = '';
-            earnedBadges.forEach(i => earned += `<div class="earned-badge">${badges[i][0]}</div>`);
-            document.getElementById('earnedDisplay').innerHTML = earned;
+            html += '</div>';
+            document.getElementById('bookList').innerHTML = html;
+
+            html = '<div style="margin-top: 15px;">';
+            badges.forEach((b, i) => {
+                html += '<div style="background: #FFE4E1; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><span>' + b[0] + ' ' + b[1] + '</span><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBadge(' + i + ')">Remove</button></div>';
+            });
+            html += '</div>';
+            document.getElementById('badgeList').innerHTML = html;
+        }
+
+        function deleteBook(idx) {
+            if (books.length <= 1) return alert('Keep at least one book!');
+            deleteTarget = { type: 'book', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Book?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + books[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function deleteBadge(idx) {
+            if (badges.length <= 1) return alert('Keep at least one badge!');
+            deleteTarget = { type: 'badge', idx: idx };
+            document.getElementById('confirmTitle').innerHTML = 'Remove Badge?';
+            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + badges[idx][1] + '</strong>?';
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function confirmDelete() {
+            if (!deleteTarget) return;
+            if (deleteTarget.type === 'book') {
+                books.splice(deleteTarget.idx, 1);
+                if (selectedBook === deleteTarget.idx) selectedBook = null;
+                else if (selectedBook > deleteTarget.idx) selectedBook--;
+                displayBooks();
+            } else if (deleteTarget.type === 'badge') {
+                badges.splice(deleteTarget.idx, 1);
+                earnedBadges = earnedBadges.filter(i => i !== deleteTarget.idx).map(i => i > deleteTarget.idx ? i - 1 : i);
+                displayRewards();
+            }
+            displayManage();
+            save();
+            closeConfirm();
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmModal').style.display = 'none';
+            deleteTarget = null;
         }
 
         function resetDay() {
             document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-            document.querySelectorAll('.activity-card').forEach(c => c.classList.remove('checked'));
+            document.querySelectorAll('.activity-card').forEach(card => card.classList.remove('checked'));
             save();
         }
 
         function save() {
             const checkboxStates = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => checkboxStates[c.id] = c.checked);
-            saveToFirebase({ books, badges, earnedBadges, selectedBook, checkboxStates });
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                checkboxStates[c.id] = c.checked;
+            });
+
+            const data = {
+                books: books,
+                badges: badges,
+                earnedBadges: earnedBadges,
+                selectedBook: selectedBook,
+                checkboxStates: checkboxStates,
+                lastUpdated: new Date().toISOString()
+            };
+            saveToFirebase(data);
         }
 
-        document.addEventListener('DOMContentLoaded', loadFromFirebase);
+        function toggleActivityCard(card, event) {
+            if (event && event.target.tagName === 'INPUT') return;
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            const num = parseInt(card.id.substring(1));
+            updateActivityCard(num);
+        }
+
+        function updateActivityCard(num, silent = false) {
+            const checkbox = document.getElementById('c' + num);
+            const card = document.getElementById('a' + num);
+            if (checkbox.checked) {
+                card.classList.add('checked');
+                if (!silent) playSound('wood');
+            } else {
+                card.classList.remove('checked');
+            }
+            save();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoInput = document.getElementById('bookPhoto');
+            if (photoInput) {
+                photoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('photoPreview');
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            loadFromFirebase();
+        });
     </script>
 </body>
 </html>
