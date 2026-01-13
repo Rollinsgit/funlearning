@@ -92,7 +92,7 @@
             align-items: center;
             gap: 15px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             min-height: 50px;
             touch-action: manipulation;
         }
@@ -104,6 +104,7 @@
             background: linear-gradient(135deg, #98FF98, #00FF00);
             border-color: #00AA00;
             box-shadow: 0 6px 20px rgba(152, 255, 152, 0.4);
+            transform: scale(1.03); /* Small bounce effect */
         }
         input[type="checkbox"] {
             width: 40px;
@@ -134,6 +135,20 @@
         }
         .btn:hover { transform: scale(1.05); }
         .btn-danger { background: linear-gradient(135deg, #FF6B6B, #FF1493); }
+        
+        /* POP ANIMATION FOR BADGES */
+        @keyframes badgePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4) rotate(10deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+        .badge-btn.earned {
+            background: linear-gradient(135deg, #98FF98, #00FF00);
+            border-color: #00AA00;
+            animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1.1) rotate(5deg);
+        }
+
         input[type="text"] { 
             padding: 12px; 
             font-size: 1.1rem; 
@@ -208,10 +223,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .badge-btn:hover { transform: scale(1.1) rotate(5deg); }
-        .badge-btn.earned {
-            background: linear-gradient(135deg, #98FF98, #00FF00);
-            border-color: #00AA00;
-        }
         .badge-label { font-size: 0.75rem; margin-top: 5px; font-weight: bold; }
         .earned-display {
             display: grid;
@@ -247,45 +258,9 @@
         <div id="activities" class="content active">
             <h2>📚 My Learning Activities</h2>
             <button class="btn btn-danger" onclick="resetDay()">🔄 Reset Today</button>
-            <div class="section">
+            <div class="section" id="activitySection">
                 <h3>Today's Learning</h3>
-                <div class="activity-card" id="a1" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c1" onclick="event.stopPropagation()" onchange="updateActivityCard(1)">
-                    <label class="activity-label" for="c1">📱 Reading.com</label>
                 </div>
-                <div class="activity-card" id="a2" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c2" onclick="event.stopPropagation()" onchange="updateActivityCard(2)">
-                    <label class="activity-label" for="c2">🌊 SplashLearn</label>
-                </div>
-                <div class="activity-card" id="a3" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c3" onclick="event.stopPropagation()" onchange="updateActivityCard(3)">
-                    <label class="activity-label" for="c3">🌍 Lingokids</label>
-                </div>
-                <div class="activity-card" id="a4" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c4" onclick="event.stopPropagation()" onchange="updateActivityCard(4)">
-                    <label class="activity-label" for="c4">🎓 Khan Academy Kids</label>
-                </div>
-                <div class="activity-card" id="a5" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c5" onclick="event.stopPropagation()" onchange="updateActivityCard(5)">
-                    <label class="activity-label" for="c5">📚 Bob Books</label>
-                </div>
-                <div class="activity-card" id="a6" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c6" onclick="event.stopPropagation()" onchange="updateActivityCard(6)">
-                    <label class="activity-label" for="c6">📖 Readers & Books</label>
-                </div>
-                <div class="activity-card" id="a7" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c7" onclick="event.stopPropagation()" onchange="updateActivityCard(7)">
-                    <label class="activity-label" for="c7">✏️ Grooved Books</label>
-                </div>
-                <div class="activity-card" id="a8" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c8" onclick="event.stopPropagation()" onchange="updateActivityCard(8)">
-                    <label class="activity-label" for="c8">🎨 Arts & Crafts</label>
-                </div>
-                <div class="activity-card" id="a9" onclick="toggleActivityCard(this, event)">
-                    <input type="checkbox" id="c9" onclick="event.stopPropagation()" onchange="updateActivityCard(9)">
-                    <label class="activity-label" for="c9">🔬 Science Projects</label>
-                </div>
-            </div>
         </div>
         
         <div id="books" class="content">
@@ -317,49 +292,37 @@
             <h2>➕ Add New Items</h2>
             <div class="section">
                 <h3>Add a Book</h3>
-                <input type="text" id="bookTitle" placeholder="Book Name (e.g., Bob Books)">
-                <input type="text" id="bookDesc" placeholder="Book Description (e.g., Fun adventure!)">
-                <label for="bookPhoto" style="display: block; font-weight: bold; color: #FF1493; margin: 10px 0;">Upload Book Photo (optional):</label>
+                <input type="text" id="bookTitle" placeholder="Book Name">
+                <input type="text" id="bookDesc" placeholder="Description">
                 <input type="file" id="bookPhoto" accept="image/*">
-                <img id="photoPreview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 2px solid #FF1493; display: none;">
                 <button class="btn" onclick="addBook()">Add Book</button>
-                <div id="bookList" style="margin-top: 15px;"></div>
+                <div id="bookList"></div>
             </div>
             <div class="section">
                 <h3>Add a Badge</h3>
-                <input type="text" id="badgeEmoji" placeholder="Emoji (e.g., 🌟)" maxlength="5">
-                <input type="text" id="badgeTitle" placeholder="Badge Name (e.g., Star Learner)">
+                <input type="text" id="badgeEmoji" placeholder="Emoji" maxlength="5">
+                <input type="text" id="badgeTitle" placeholder="Badge Name">
                 <button class="btn" onclick="addBadge()">Add Badge</button>
-                <div id="badgeList" style="margin-top: 15px;"></div>
+                <div id="badgeList"></div>
             </div>
         </div>
     </div>
 
     <div id="confirmModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-        <div style="background: white; padding: 25px; border-radius: 20px; max-width: 350px; text-align: center; border: 5px solid #FFD700; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-            <h3 id="confirmTitle" style="font-size: 1.3rem; color: #FF1493; margin-bottom: 15px;">Remove this item?</h3>
-            <p style="font-size: 1.1rem; margin-bottom: 20px; color: #333;" id="confirmMsg">Are you sure?</p>
-            <button onclick="closeConfirm()" style="background: #95a5a6; color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Cancel</button>
-            <button onclick="confirmDelete()" style="background: linear-gradient(135deg, #FF6B6B, #FF1493); color: white; border: 3px white solid; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; margin: 8px; font-size: 1rem;">Yes, Remove</button>
+        <div style="background: white; padding: 25px; border-radius: 20px; max-width: 350px; text-align: center; border: 5px solid #FFD700;">
+            <h3 id="confirmTitle" style="color: #FF1493;">Remove?</h3>
+            <p id="confirmMsg" style="margin: 15px 0;"></p>
+            <button onclick="closeConfirm()" class="btn" style="background: #95a5a6;">Cancel</button>
+            <button onclick="confirmDelete()" class="btn btn-danger">Remove</button>
         </div>
     </div>
 
     <script>
-        // --- QUIET SOUNDS SETUP ---
+        // --- SOUNDS ---
         const woodBlockSound = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
-        const rewardChime = new Audio('https://www.soundjay.com/misc/sounds/bell-ring-01.mp3');
-        
-        // Low volume (0.05 is 5%)
+        const rewardChime = new Audio('https://www.soundjay.com/communication/sounds/bell-ringing-05.mp3');
         woodBlockSound.volume = 0.05;
         rewardChime.volume = 0.05;
-
-        function playSound(type) {
-            try {
-                const s = (type === 'wood') ? woodBlockSound : rewardChime;
-                s.currentTime = 0;
-                s.play().catch(e => console.log("Sound interaction block"));
-            } catch (e) {}
-        }
 
         const FIREBASE_URL = 'https://funlearning-f53a4-default-rtdb.firebaseio.com';
         const DEVICE_ID = 'juliette_shared_data';
@@ -370,38 +333,37 @@
         let selectedBook = null;
         let deleteTarget = null;
 
-        function saveToFirebase(data) {
-            fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json', {
-                method: 'PUT',
-                body: JSON.stringify(data)
-            }).catch(error => console.log('Firebase save error:', error));
+        // Activity List
+        const activityList = [
+            {id: 1, label: "📱 Reading.com"},
+            {id: 2, label: "🌊 SplashLearn"},
+            {id: 3, label: "🌍 Lingokids"},
+            {id: 4, label: "🎓 Khan Academy Kids"},
+            {id: 5, label: "📚 Bob Books"},
+            {id: 6, label: "📖 Readers & Books"},
+            {id: 7, label: "✏️ Grooved Books"},
+            {id: 8, label: "🎨 Arts & Crafts"},
+            {id: 9, label: "🔬 Science Projects"}
+        ];
+
+        function playSound(type) {
+            try {
+                const s = (type === 'wood') ? woodBlockSound : rewardChime;
+                s.currentTime = 0;
+                s.play().catch(() => {});
+            } catch (e) {}
         }
 
-        function loadFromFirebase() {
-            fetch(FIREBASE_URL + '/' + DEVICE_ID + '/data.json')
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        books = data.books || books;
-                        badges = data.badges || badges;
-                        earnedBadges = data.earnedBadges || [];
-                        selectedBook = data.selectedBook !== undefined ? data.selectedBook : null;
-                        
-                        if (data.checkboxStates) {
-                            Object.keys(data.checkboxStates).forEach(checkboxId => {
-                                const checkbox = document.getElementById(checkboxId);
-                                if (checkbox) {
-                                    checkbox.checked = data.checkboxStates[checkboxId];
-                                    updateActivityCard(parseInt(checkboxId.substring(1)), true);
-                                }
-                            });
-                        }
-                        
-                        displayBooks();
-                        displayRewards();
-                    }
-                })
-                .catch(error => console.log('Firebase load error:', error));
+        function renderActivities() {
+            let html = '<h3>Today\'s Learning</h3>';
+            activityList.forEach(a => {
+                html += `
+                <div class="activity-card" id="a${a.id}" onclick="toggleActivityCard(this, event)">
+                    <input type="checkbox" id="c${a.id}" onclick="event.stopPropagation()" onchange="updateActivityCard(${a.id})">
+                    <label class="activity-label">${a.label}</label>
+                </div>`;
+            });
+            document.getElementById('activitySection').innerHTML = html;
         }
 
         function showTab(tab) {
@@ -412,196 +374,22 @@
             if (tab === 'manage') displayManage();
         }
 
-        function displayBooks() {
-            let html = '';
-            books.forEach((b, i) => {
-                html += '<div class="book-btn ' + (selectedBook === i ? 'selected' : '') + '" onclick="selectBook(' + i + ')">';
-                if (b[2]) {
-                    html += '<img src="' + b[2] + '" style="width: 90px; height: 90px; object-fit: cover; border-radius: 8px; margin: 5px 0; border: 3px solid rgba(255,255,255,0.7);">';
-                } else {
-                    html += '<div class="book-emoji">' + b[0] + '</div>';
-                }
-                html += '<div class="book-title">' + b[1] + '</div></div>';
-            });
-            document.getElementById('bookGrid').innerHTML = html;
-            updateBookDisplay();
-        }
-
-        function selectBook(idx) {
-            selectedBook = selectedBook === idx ? null : idx;
-            displayBooks();
-            save();
-        }
-
-        function updateBookDisplay() {
-            if (selectedBook !== null) {
-                let display = '<div style="font-size: 1.5rem; margin-bottom: 10px;">' + books[selectedBook][0] + '</div>';
-                display += '<div style="font-size: 1.3rem; color: #FF1493; font-weight: bold; margin-bottom: 10px;">' + books[selectedBook][1] + '</div>';
-                if (books[selectedBook][3]) {
-                    display += '<div style="font-size: 1.1rem; color: #666; font-style: italic;">' + books[selectedBook][3] + '</div>';
-                }
-                document.getElementById('currentBook').innerHTML = display;
-            } else {
-                document.getElementById('currentBook').innerHTML = 'Pick a book!';
-            }
-        }
-
-        function displayRewards() {
-            let html = '';
-            badges.forEach((b, i) => {
-                html += '<div class="badge-btn ' + (earnedBadges.includes(i) ? 'earned' : '') + '" onclick="toggleBadge(' + i + ')"><div>' + b[0] + '</div><div class="badge-label">' + b[1] + '</div></div>';
-            });
-            document.getElementById('badgeGrid').innerHTML = html;
-            
-            let earned = '';
-            if (earnedBadges.length === 0) {
-                earned = '<div style="text-align: center; color: #999; padding: 20px;">Click badges above to earn them!</div>';
-            } else {
-                earnedBadges.forEach(i => {
-                    earned += '<div class="earned-badge">' + badges[i][0] + '</div>';
-                });
-            }
-            document.getElementById('earnedDisplay').innerHTML = earned;
-        }
-
         function toggleBadge(idx) {
             if (earnedBadges.includes(idx)) {
                 earnedBadges = earnedBadges.filter(i => i !== idx);
             } else {
                 earnedBadges.push(idx);
-                playSound('reward');
+                playSound('reward'); // Play old chime
             }
             displayRewards();
             save();
-        }
-
-        function addBook() {
-            const title = document.getElementById('bookTitle').value.trim();
-            const desc = document.getElementById('bookDesc').value.trim();
-            const photoFile = document.getElementById('bookPhoto').files[0];
-            if (!title) return alert('Fill in book name!');
-            if (photoFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    books.push(["📚", title, e.target.result, desc || 'A great book!']);
-                    clearBookForm();
-                    displayBooks();
-                    displayManage();
-                    save();
-                };
-                reader.readAsDataURL(photoFile);
-            } else {
-                books.push(["📚", title, null, desc || 'A great book!']);
-                clearBookForm();
-                displayBooks();
-                displayManage();
-                save();
-            }
-        }
-
-        function clearBookForm() {
-            document.getElementById('bookTitle').value = '';
-            document.getElementById('bookDesc').value = '';
-            document.getElementById('bookPhoto').value = '';
-            document.getElementById('photoPreview').style.display = 'none';
-        }
-
-        function addBadge() {
-            const emoji = document.getElementById('badgeEmoji').value.trim();
-            const title = document.getElementById('badgeTitle').value.trim();
-            if (!emoji || !title) return alert('Fill in emoji and name!');
-            badges.push([emoji, title]);
-            document.getElementById('badgeEmoji').value = '';
-            document.getElementById('badgeTitle').value = '';
-            displayRewards();
-            displayManage();
-            save();
-        }
-
-        function displayManage() {
-            let html = '<div style="margin-top: 15px;">';
-            books.forEach((b, i) => {
-                let bookInfo = b[1] + (b[3] ? ' - ' + b[3] : '');
-                html += '<div style="background: #E1F5FF; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><div><span>' + bookInfo + '</span>' + (b[2] ? '<br><small style="color: #999;">✓ Has photo</small>' : '') + '</div><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBook(' + i + ')">Remove</button></div>';
-            });
-            html += '</div>';
-            document.getElementById('bookList').innerHTML = html;
-
-            html = '<div style="margin-top: 15px;">';
-            badges.forEach((b, i) => {
-                html += '<div style="background: #FFE4E1; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;"><span>' + b[0] + ' ' + b[1] + '</span><button class="btn" style="margin: 0; font-size: 0.9rem;" onclick="deleteBadge(' + i + ')">Remove</button></div>';
-            });
-            html += '</div>';
-            document.getElementById('badgeList').innerHTML = html;
-        }
-
-        function deleteBook(idx) {
-            if (books.length <= 1) return alert('Keep at least one book!');
-            deleteTarget = { type: 'book', idx: idx };
-            document.getElementById('confirmTitle').innerHTML = 'Remove Book?';
-            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + books[idx][1] + '</strong>?';
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-
-        function deleteBadge(idx) {
-            if (badges.length <= 1) return alert('Keep at least one badge!');
-            deleteTarget = { type: 'badge', idx: idx };
-            document.getElementById('confirmTitle').innerHTML = 'Remove Badge?';
-            document.getElementById('confirmMsg').innerHTML = 'Remove <strong>' + badges[idx][1] + '</strong>?';
-            document.getElementById('confirmModal').style.display = 'flex';
-        }
-
-        function confirmDelete() {
-            if (!deleteTarget) return;
-            if (deleteTarget.type === 'book') {
-                books.splice(deleteTarget.idx, 1);
-                if (selectedBook === deleteTarget.idx) selectedBook = null;
-                else if (selectedBook > deleteTarget.idx) selectedBook--;
-                displayBooks();
-            } else if (deleteTarget.type === 'badge') {
-                badges.splice(deleteTarget.idx, 1);
-                earnedBadges = earnedBadges.filter(i => i !== deleteTarget.idx).map(i => i > deleteTarget.idx ? i - 1 : i);
-                displayRewards();
-            }
-            displayManage();
-            save();
-            closeConfirm();
-        }
-
-        function closeConfirm() {
-            document.getElementById('confirmModal').style.display = 'none';
-            deleteTarget = null;
-        }
-
-        function resetDay() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-            document.querySelectorAll('.activity-card').forEach(card => card.classList.remove('checked'));
-            save();
-        }
-
-        function save() {
-            const checkboxStates = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
-                checkboxStates[c.id] = c.checked;
-            });
-
-            const data = {
-                books: books,
-                badges: badges,
-                earnedBadges: earnedBadges,
-                selectedBook: selectedBook,
-                checkboxStates: checkboxStates,
-                lastUpdated: new Date().toISOString()
-            };
-            saveToFirebase(data);
         }
 
         function toggleActivityCard(card, event) {
             if (event && event.target.tagName === 'INPUT') return;
             const checkbox = card.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
-            const num = parseInt(card.id.substring(1));
-            updateActivityCard(num);
+            updateActivityCard(parseInt(card.id.substring(1)));
         }
 
         function updateActivityCard(num, silent = false) {
@@ -609,29 +397,73 @@
             const card = document.getElementById('a' + num);
             if (checkbox.checked) {
                 card.classList.add('checked');
-                if (!silent) playSound('wood');
+                if (!silent) playSound('wood'); // Play new wood sound
             } else {
                 card.classList.remove('checked');
             }
             save();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const photoInput = document.getElementById('bookPhoto');
-            if (photoInput) {
-                photoInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const preview = document.getElementById('photoPreview');
-                            preview.src = e.target.result;
-                            preview.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
+        // --- FIREBASE & STORAGE ---
+        function save() {
+            const checkboxStates = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => checkboxStates[c.id] = c.checked);
+            const data = { books, badges, earnedBadges, selectedBook, checkboxStates, lastUpdated: new Date().toISOString() };
+            fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`, { method: 'PUT', body: JSON.stringify(data) });
+        }
+
+        function loadFromFirebase() {
+            fetch(`${FIREBASE_URL}/${DEVICE_ID}/data.json`)
+                .then(r => r.json()).then(data => {
+                    if (data) {
+                        books = data.books || books;
+                        badges = data.badges || badges;
+                        earnedBadges = data.earnedBadges || [];
+                        selectedBook = data.selectedBook ?? null;
+                        if (data.checkboxStates) {
+                            Object.keys(data.checkboxStates).forEach(id => {
+                                const cb = document.getElementById(id);
+                                if (cb) { cb.checked = data.checkboxStates[id]; updateActivityCard(id.substring(1), true); }
+                            });
+                        }
+                        displayBooks(); displayRewards();
                     }
                 });
-            }
+        }
+
+        function displayBooks() {
+            let html = '';
+            books.forEach((b, i) => {
+                html += `<div class="book-btn ${selectedBook === i ? 'selected' : ''}" onclick="selectBook(${i})">
+                    ${b[2] ? `<img src="${b[2]}" style="width:90px; height:90px; object-fit:cover; border-radius:8px; margin:5px 0;">` : `<div class="book-emoji">${b[0]}</div>`}
+                    <div class="book-title">${b[1]}</div></div>`;
+            });
+            document.getElementById('bookGrid').innerHTML = html;
+            const cur = selectedBook !== null ? `<div>${books[selectedBook][0]}</div><div>${books[selectedBook][1]}</div>` : 'Pick a book!';
+            document.getElementById('currentBook').innerHTML = cur;
+        }
+
+        function selectBook(idx) { selectedBook = selectedBook === idx ? null : idx; displayBooks(); save(); }
+
+        function displayRewards() {
+            let html = '';
+            badges.forEach((b, i) => {
+                html += `<div class="badge-btn ${earnedBadges.includes(i) ? 'earned' : ''}" onclick="toggleBadge(${i})"><div>${b[0]}</div><div class="badge-label">${b[1]}</div></div>`;
+            });
+            document.getElementById('badgeGrid').innerHTML = html;
+            let earned = earnedBadges.length ? '' : 'None yet!';
+            earnedBadges.forEach(i => earned += `<div class="earned-badge">${badges[i][0]}</div>`);
+            document.getElementById('earnedDisplay').innerHTML = earned;
+        }
+
+        function resetDay() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => { c.checked = false; updateActivityCard(c.id.substring(1), true); });
+            save();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
             loadFromFirebase();
         });
     </script>
